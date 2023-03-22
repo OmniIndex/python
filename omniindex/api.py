@@ -1,15 +1,33 @@
 import requests
 import json
 
-def get_block_schematic(unitName, server, Type, user, password):
+# Constants
+_API_KEY = None
+_SERVER = None
+
+# Functions
+
+def api_key(api_key):
+    global _API_KEY
+    _API_KEY = api_key
+
+def server(server_name):
+    global _SERVER
+    _SERVER = server_name
+
+def unit_name(unit_name):
+    global _UNIT_NAME
+    _UNIT_NAME = unit_name
+
+def get_block_schematic(unitName, Type, user)):
     url = "https://api.omniindex.xyz/api_v1/getblockschematic"
 
     payload = json.dumps({
-        "unitName": unitName,
-        "server": server,
+        "unitName": _UNIT_NAME,
+        "server": _SERVER,
         "Type": Type,
         "user": user,
-        "password": password
+        "password": _API_KEY
     })
     headers = {
         'Content-Type': 'application/json',
