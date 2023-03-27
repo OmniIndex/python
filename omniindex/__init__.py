@@ -1,1 +1,1 @@
-from .api import get_block_schematic
+from omniindex.api import OmniIndexClient
