@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="omniindex",
-    version="0.1.0",
+    version="0.1.6",
     packages=find_packages(),
     install_requires=[
         "requests",
@@ -22,7 +22,6 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
-        "Programming Language :: Python :: 3.11"
+        "Programming Language :: Python :: 3.10"
     ],
 )
