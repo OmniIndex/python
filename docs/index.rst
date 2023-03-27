@@ -8,7 +8,9 @@ Welcome to OmniIndex Python Library's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Python API Contents:
+
+   source/api/api
 
 
 

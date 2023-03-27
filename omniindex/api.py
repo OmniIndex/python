@@ -2,7 +2,8 @@ import requests
 import json
 
 class OmniIndexClient:
-    """Instantiate an Omniindex client object to interact with the Omniindex API.
+    """
+    Instantiate an Omniindex client object to interact with the Omniindex API.
     Parameters are:
     :param server: The server to connect to. This can be either "testnet" or "mainnet".
     :type server: str
@@ -22,7 +23,8 @@ class OmniIndexClient:
         self.user = user
 
     def get_block_schematic(self):
-        """Omniindex API call to get the schematic of a block.
+        """
+        Omniindex API call to get the schematic of a block.
 
         Returns:
             str: JSON string containing the block schematic.
