@@ -1,4 +1,12 @@
+# Always prefer setuptools over distutils
 from setuptools import setup, find_packages
+
+# To use a consistent encoding
+from codecs import open
+from os import path
+
+# The directory containing this file
+HERE = path.abspath(path.dirname(__file__))
 
 setup(
     name="omniindex",
@@ -7,6 +15,7 @@ setup(
     install_requires=[
         "requests",
     ],
+    include_package_data=True,
     author="James Stanbridge",
     author_email="james@omniindex.io",
     description="A Python package for interacting with the OmniIndex Homomorphic Encrypted Blockchain API",
