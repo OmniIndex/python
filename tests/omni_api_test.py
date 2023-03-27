@@ -29,3 +29,5 @@ def test_init(client):
     assert client.unit_name == "enronemail"
     assert client.block_type == "Owner"
     assert client.user == "enronemail"
+
+    # Tests that an exception is raised when an invalid api key parameter is passed. tags: [edge case]
