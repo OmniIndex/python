@@ -10,7 +10,10 @@ Welcome to OmniIndex Python Library's documentation!
    :maxdepth: 2
    :caption: Python API Contents:
 
-   source/api/api
+
+   source/examples/introduction
+   source/api/class
+   source/examples/sample_code
 
 
 

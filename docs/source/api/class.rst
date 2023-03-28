@@ -1,4 +1,6 @@
-
+OmniIndexClient
+===============
+   
 .. currentmodule:: omniindex.api
 
 .. autoclass:: omniindex.api.OmniIndexClient
