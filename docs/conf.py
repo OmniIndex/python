@@ -26,7 +26,7 @@ extensions = [
 ]
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-
+html_domain_indices = True # https://stackoverflow.com/questions/56336234/build-fail-sphinx-error-contents-rst-not-found
 
 
 # -- Options for HTML output -------------------------------------------------

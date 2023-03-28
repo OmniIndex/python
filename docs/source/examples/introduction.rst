@@ -2,12 +2,19 @@ Introduction
 ============
 
 Welcome to the `OmniIndex Python API` library documentation! This library provides a simple and easy-to-use Python interface for interacting with the OmniIndex API. With `omniindex`, you can quickly retrieve block schematics and perform various tasks related to the OmniIndex blockchain.
+With the OmniIndex suite of tools, data is protected with our patented 360° encryption, stored in hybrid-blockchains, and then made usable in your favorite collaboration, productivity, and analytics tools with no risk of exposure. Our patented FHE (Fully Homomorphic Encryption) means search and analytics can happen on the data while it is encrypted, and there is tiered access using two encryption keys with configurable access rights. 
+In other words: **Your data is secure and private at all times**
+
 
 Getting Started
 ---------------
 
 To use the library, start by importing the `OmniIndexClient` and `os` class:
-**assumes you have already set an environmental variable for your API key using your os. If you have not, you can set it using the following command: `export OMNIINDEX_API_KEY=your_api_key`**
+**assumes you have already set an environmental variable for your API key using your os.** If you have not, you can set it using the following command: 
+
+.. code-block:: bash 
+
+   export OMNIINDEX_API_KEY=your_api_key
 
 .. code-block:: python
 

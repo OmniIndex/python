@@ -28,7 +28,20 @@ class OmniIndexClient:
     def get_block_schematic(self):
         """
         Omniindex API call to get the schematic of a block. Before you can do any work with Omniindex you must first get the schematic of the block you want to use. This will return a JSON string containing the schematic of the block. You can then use this schematic to create a block object.
+        This POST method will bring back the schematic of a block that the user has access to
 
+        :param method: (hard coded) HTTP request method (POST)
+        :param url: (hard coded) URL to the Omniindex API endpoint 
+        :param payload: JSON string containing the unit name, server, block type, user and API key.
+        :param headers: (hard coded) Content-Type and Accept headers.
+        :param response: Response from the API call.
+        :type method: str
+        :type url: str
+        :type payload: str
+        :type headers: dict
+        :type response: str
+        :type response: str
+        
         Returns:
             str: JSON string containing the block schematic.
 

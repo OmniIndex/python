@@ -4,7 +4,15 @@ import json
 from omniindex.api import OmniIndexClient
 
 import pytest
+"""
+To run these tests
+------------------
 
+.. code-block:: bash
+
+    $ python -m pytest tests/
+
+"""
 def test_get_block_schematic_returns_json_string():
     """Test that the get_block_schematic() method returns a valid JSON string."""
     client = OmniIndexClient('https://node1.omniindex.xyz/node', 'NTAzMjcxMjA5NzM1NjYyMg==', 'enronemail', 'Owner', 'enronemail')
@@ -30,4 +38,4 @@ def test_init(client):
     assert client.block_type == "Owner"
     assert client.user == "enronemail"
 
-    # Tests that an exception is raised when an invalid api key parameter is passed. tags: [edge case]
+
