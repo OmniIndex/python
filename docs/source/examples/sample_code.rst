@@ -54,3 +54,27 @@ You will now have a JSON output of the block schematic:
 
    {'0': {'column_name': 'bodyowners', 'data_type': 'text'}, '1': {'column_name': 'bodysearchableowners', 'data_type': 'text'}, '2': {'column_name': 'contentsearchableowners', 'data_type': 'text'}, '3': {'column_name': 'context', 'data_type': 'text'}, '4': {'column_name': 'context2', 'data_type': 'text'}, '5': {'column_name': 'folder', 'data_type': 'text'}, '6': {'column_name': 'fromowners', 'data_type': 'text'}, '7': {'column_name': 'fromsearchableowners', 'data_type': 'text'}, '8': {'column_name': 'hash', 'data_type': 'character varying'}, '9': {'column_name': 'message_id', 'data_type': 'text'}, '10': {'column_name': 'oidxid', 'data_type': 'integer'}, '11': {'column_name': 'prevhash', 'data_type': 'character varying'}, '12': {'column_name': 'priorhash', 'data_type': 'text'}, '13': {'column_name': 'recieveddate', 'data_type': 'timestamp without time zone'}, '14': {'column_name': 'sentiment', 'data_type': 'text'}, '15': {'column_name': 'sentiment2', 'data_type': 'text'}, '16': {'column_name': 'subject', 'data_type': 'text'}, '17': {'column_name': 'toowners', 'data_type': 'text'}, '18': {'column_name': 'tosearchableowners', 'data_type': 'text'}}
 
+Tests
+=====
+
+API endpoint tests
+------------------
+
+- to run the tests, first install the `pytest` package:
+
+.. code-block:: bash
+
+   pip install pytest   
+
+- then run the tests:
+
+.. code-block:: python
+
+   def test_ssl_api_endpoint():
+    # import the requests library
+    import requests
+    
+    endpoint = "https://api.omniindex.xyz/api_v1" # set the api endpoint
+    response = requests.get(endpoint, verify=True) # make a request to the endpoint
+    
+    assert response.status_code == 200 # assert that the response is successful
