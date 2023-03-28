@@ -38,4 +38,20 @@ def test_init(client):
     assert client.block_type == "Owner"
     assert client.user == "enronemail"
 
+def test_ssl_api_endpoint():
+    # import the requests library
+    import requests
+    
+    endpoint = "https://api.omniindex.xyz/api_v1" # set the api endpoint
+    response = requests.get(endpoint, verify=True) # make a request to the endpoint
+    
+    assert response.status_code == 200 # assert that the response is successful
 
+def test_ssl_api_endpoint_getblockschema():
+    # import the requests library
+    import requests
+    
+    endpoint = "https://api.omniindex.xyz/api_v1/getblockschema" # set the api endpoint
+    response = requests.get(endpoint, verify=True) # make a request to the endpoint
+    
+    assert response.status_code == 200 # assert that the response is successful
