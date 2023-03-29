@@ -75,6 +75,10 @@ class OmniIndexClient:
         We built the Dropblock Add-on for Google Workspace and BigQuery as a perfect implementation of this capability. And it is further enhanced by the ability to redact (partially encrypt) data from within a document into a separate block. (We’ll see more of that later in the documentation. But you can do this from any tool you wish via the API.)
         **Notice the extra key in this JSON object: ‘showProtected’. You must declare ‘true’, or the default value false will be used.**    
 
+        .. note::
+            When set ‘true’, the full folder name will be returned in the result set.
+            When  set ‘false’, the folder name is redacted. However, you can see that one exists.
+
         This API allows an authorized user to view the folder structure of a block they have the required permissions to inspect:
 
         :param method: (hard coded) HTTP request method (POST)

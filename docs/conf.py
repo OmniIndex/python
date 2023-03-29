@@ -26,7 +26,7 @@ extensions = [
 ]
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-html_domain_indices = True # https://stackoverflow.com/questions/56336234/build-fail-sphinx-error-contents-rst-not-found
+
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -34,3 +34,5 @@ html_domain_indices = True # https://stackoverflow.com/questions/56336234/build-
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+html_domain_indices = True # https://stackoverflow.com/questions/56336234/build-fail-sphinx-error-contents-rst-not-found
+html_domain_indices = [('*','genindex', 'genindex.html', 4)]
