@@ -4,7 +4,8 @@
 
 The OmniIndex Python library provides convenient access to the OmniIndex API from applications written in the Python language. It includes a pre-defined set of classes for API resources that initialize themselves dynamically from API responses which makes it compatible with a wide range of versions of the OmniIndex API.
 
-You can find usage examples for the OmniIndex Python library in our [API reference](https://omniindex.readthedocs.io/)
+You can find usage examples for the OmniIndex Python library in our [Python Library reference](https://omniindex.readthedocs.io/) which includes code samples etc
+For just the [API reference](https://app.swaggerhub.com/apis-docs/OmniIndexAPI/OmniIndex/1.0.0)
 
 ## Installation
 

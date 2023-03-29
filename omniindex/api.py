@@ -114,3 +114,46 @@ class OmniIndexClient:
 
         response = requests.request("POST", url, headers=HEADERS, data=payload)
         return response.text
+
+    def get_searchchain(self, show_protected, search_phrase, search_type): 
+        """
+        Omniindex API call to search the entire unitname in the blockchain. This POST method will bring back documents in a block that the user has access to.
+        Using showProtected, you can search the entire blockchain for a specific phrase. This is a powerful capability that allows you to search for documents that contain a specific phrase including redacted data.
+        Using searchType, you can search for a specific type of search, either of just the document contents or of the titles, filenames etc
+        With this API Call, we can return datasets using familiar, natural language search techniques of the encrypted data on the blockchain. 
+
+        Args:
+            show_protected (str): "true" or "false" (default is "false") sets if the search will include redacted content.
+            search_phrase (str): a string to search for.
+            search_type (str): "fulltext" or "files" (default is "fulltext") FullText will search the file names, folder names, content, and dates, while files will only search within the content of the files:
+
+        Param:
+            method: (hard coded) HTTP request method (POST)
+            url: (hard coded) URL to the Omniindex API endpoint
+            payload: JSON string containing the unit name, server, block type, user and API key.
+            headers: (hard coded) Content-Type and Accept headers.
+            response: Response from the API call.
+        type:
+            method: str
+            url: str
+            payload: str
+            headers: dict
+            response: str
+
+        reference to :func:`omniindex.api.OmniIndexClient.get_searchchain`.
+        
+        """
+        url = "https://api.omniindex.xyz/api_v1/getsearchchain"
+
+        payload = json.dumps({
+            "unitName": self.unit_name,
+            "server": self.server,
+            "showProtected": show_protected,
+            "searchPhrase": search_phrase,
+            "searchType": search_type,
+            "user": self.user,
+            "password": self.api_key
+        })
+
+        response = requests.request("POST", url, headers=HEADERS, data=payload)
+        return response.text

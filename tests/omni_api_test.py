@@ -2,16 +2,16 @@ import pytest
 import requests
 import json
 from omniindex.api import OmniIndexClient
-
+import os
 import pytest
 
 # define constants
 
-NODE = 'https://node1.omniindex.xyz/node'
-USER_KEY = 'NTAzMjcxMjA5NzM1NjYyMg==' # enronemail
-USER_DEMO_KEY ='mfNd06J1X1Tfq4c3BlVXbFVBhvYA456O' #dropblock demonstration key
-USER_DEMO = 'DYb1ZlT3UqSOKbEsBUkLB4o9Eqn2' #dropblock demonstration user
-UNIT_DEMO = 'sibain@omniindex.io' #dropblock demonstration unit
+NODE = os.environ['OI_API_TEST_NODE']
+USER_KEY = os.environ['OI_API_TEST_USER_KEY']
+USER_DEMO_KEY = os.environ['OI_API_TEST_USER_DEMO_KEY']
+USER_DEMO = os.environ['OI_API_TEST_USER_DEMO']
+UNIT_DEMO = os.environ['OI_API_TEST_UNIT_DEMO']
 
 """
 To run these tests
