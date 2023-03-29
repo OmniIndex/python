@@ -21,6 +21,21 @@ def test_get_block_schematic_returns_json_string():
     assert json.loads(json_string) is not None
     assert json.loads(json_string) != {}
 
+def test_get_folders_true_returns_json_string():
+    """Test that the get_block_schematic() method returns a valid JSON string when showProtected is set to true."""
+    client = OmniIndexClient('https://node1.omniindex.xyz/node', 'NTAzMjcxMjA5NzM1NjYyMg==', 'enronemail', 'Owner', 'enronemail')
+    json_string = client.get_folders("true")
+    assert type(json_string) == str
+    assert json.loads(json_string) is not None
+    assert json.loads(json_string) != {}
+
+def test_get_folders_false_returns_json_string():
+    """Test that the get_block_schematic() method returns a valid JSON string when showProtected is set to false"""
+    client = OmniIndexClient('https://node1.omniindex.xyz/node', 'NTAzMjcxMjA5NzM1NjYyMg==', 'enronemail', 'Owner', 'enronemail')
+    json_string = client.get_folders("false")
+    assert type(json_string) == str
+    assert json.loads(json_string) is not None
+    assert json.loads(json_string) != {}
 @pytest.fixture
 def client():
     return OmniIndexClient(
