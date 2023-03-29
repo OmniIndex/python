@@ -54,7 +54,39 @@ You will now have a JSON output of the block schematic:
 
    {'0': {'column_name': 'bodyowners', 'data_type': 'text'}, '1': {'column_name': 'bodysearchableowners', 'data_type': 'text'}, '2': {'column_name': 'contentsearchableowners', 'data_type': 'text'}, '3': {'column_name': 'context', 'data_type': 'text'}, '4': {'column_name': 'context2', 'data_type': 'text'}, '5': {'column_name': 'folder', 'data_type': 'text'}, '6': {'column_name': 'fromowners', 'data_type': 'text'}, '7': {'column_name': 'fromsearchableowners', 'data_type': 'text'}, '8': {'column_name': 'hash', 'data_type': 'character varying'}, '9': {'column_name': 'message_id', 'data_type': 'text'}, '10': {'column_name': 'oidxid', 'data_type': 'integer'}, '11': {'column_name': 'prevhash', 'data_type': 'character varying'}, '12': {'column_name': 'priorhash', 'data_type': 'text'}, '13': {'column_name': 'recieveddate', 'data_type': 'timestamp without time zone'}, '14': {'column_name': 'sentiment', 'data_type': 'text'}, '15': {'column_name': 'sentiment2', 'data_type': 'text'}, '16': {'column_name': 'subject', 'data_type': 'text'}, '17': {'column_name': 'toowners', 'data_type': 'text'}, '18': {'column_name': 'tosearchableowners', 'data_type': 'text'}}
 
-Tests
+get_folders
+-----------
+
+The `get_folders` method returns a list of folders in the dataset. You can use the `showRedacted` parameter to return the redacted data or the full data.
+
+First, let's get a list of folders with the data redacted: (The use case for this is check that folders are present in the dataset, without revealing the folder names)
+
+.. code-block:: python
+
+   folders = client.get_folders("false")
+   data = json.loads(folders)
+   print(data)
+
+You will now have a JSON output of the folders:
+
+.. code-block:: bash
+
+   {'results': [{'directory': 'Data has been redacted.'}, {'directory': 'Data has been redacted.'}, {'directory': 'Data has been redacted.'}, {'directory': 'Data has been redacted.'}, {'directory': 'Data has been redacted.'}]}
+
+Now let's get a list of folders with the full data:
+
+.. code-block:: python
+
+   folders = client.get_folders("true")
+   data = json.loads(folders)
+   print(data)
+
+You will now have a JSON output of the folders:
+
+.. code-block:: bash
+   
+   {'results': [{'directory': '/data/user/0/com.example.dropblock/cache'}, {'directory': 'Dropblock/2023-03-07'}, {'directory': 'Dropblock/2023-03-02'}, {'directory': 'Dropblock/2023-03-01'}, {'directory': 'Dropblock'}]}Tests
+
 =====
 
 API endpoint tests
@@ -78,3 +110,20 @@ API endpoint tests
     response = requests.get(endpoint, verify=True) # make a request to the endpoint
     
     assert response.status_code == 200 # assert that the response is successful
+
+Redaction test
+--------------
+
+When you run a call with showRedacted=True, the API will return the redacted data. To make sure that the redaction is working correctly, we have a test that checks the redaction has happened when set to 'false'
+
+.. code-block:: python
+   
+   def test_get_folders_false_returns_json_string():
+    """Test that the get_block_schematic() method returns a valid JSON string when showProtected is set to false"""
+    client = OmniIndexClient(NODE, USER_DEMO_KEY, UNIT_DEMO, 'Owner', USER_DEMO)    # user your own api key etc here
+    json_string = client.get_folders("false")
+    assert type(json_string) == str
+    assert json.loads(json_string) is not None
+    assert json.loads(json_string) != {}
+    json_data = json.loads(json_string)
+    assert "Data has been redacted" in json.dumps(json_data) # check that the data has been redacted
