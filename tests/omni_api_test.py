@@ -9,7 +9,9 @@ import pytest
 
 NODE = 'https://node1.omniindex.xyz/node'
 USER_KEY = 'NTAzMjcxMjA5NzM1NjYyMg==' # enronemail
-USER_DEMO_KEY ='ODA3MzA5MzMwMTUwMzQ5Mg==' #enronemail demonstration key 
+USER_DEMO_KEY ='mfNd06J1X1Tfq4c3BlVXbFVBhvYA456O' #dropblock demonstration key
+USER_DEMO = 'DYb1ZlT3UqSOKbEsBUkLB4o9Eqn2' #dropblock demonstration user
+UNIT_DEMO = 'sibain@omniindex.io' #dropblock demonstration unit
 
 """
 To run these tests
@@ -28,21 +30,33 @@ def test_get_block_schematic_returns_json_string():
     assert json.loads(json_string) is not None
     assert json.loads(json_string) != {}
 
+def test_json_string_contains_column_string():
+    """Test that the get_block_schematic() method returns a valid JSON string containing the string 'column_name'."""
+    client = OmniIndexClient(NODE, USER_KEY, 'enronemail', 'Owner', 'enronemail')
+    json_string = client.get_block_schematic()
+    json_data = json.loads(json_string)
+    assert "column_name" in json.dumps(json_data)
+
 def test_get_folders_true_returns_json_string():
     """Test that the get_block_schematic() method returns a valid JSON string when showProtected is set to true."""
-    client = OmniIndexClient(NODE, USER_DEMO_KEY, 'demonstration', 'Owner', 'deomstration')
+    client = OmniIndexClient(NODE, USER_DEMO_KEY, UNIT_DEMO, 'Owner', USER_DEMO)
     json_string = client.get_folders("true")
     assert type(json_string) == str
     assert json.loads(json_string) is not None
     assert json.loads(json_string) != {}
 
+
 def test_get_folders_false_returns_json_string():
     """Test that the get_block_schematic() method returns a valid JSON string when showProtected is set to false"""
-    client = OmniIndexClient(NODE, USER_DEMO_KEY, 'demonstration', 'Owner', 'deomstration')
+    client = OmniIndexClient(NODE, USER_DEMO_KEY, UNIT_DEMO, 'Owner', USER_DEMO)    
     json_string = client.get_folders("false")
     assert type(json_string) == str
     assert json.loads(json_string) is not None
     assert json.loads(json_string) != {}
+    json_data = json.loads(json_string)
+    assert "Data has been redacted" in json.dumps(json_data) # check that the data has been redacted
+
+
 @pytest.fixture
 def client():
     return OmniIndexClient(

@@ -78,6 +78,7 @@ class OmniIndexClient:
         .. note::
             When set ‘true’, the full folder name will be returned in the result set.
             When  set ‘false’, the folder name is redacted. However, you can see that one exists.
+            [case sensitive, default is false]
 
         This API allows an authorized user to view the folder structure of a block they have the required permissions to inspect:
 
