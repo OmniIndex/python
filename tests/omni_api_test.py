@@ -4,6 +4,12 @@ import json
 from omniindex.api import OmniIndexClient
 
 import pytest
+
+# define constants
+
+NODE = 'https://node1.omniindex.xyz/node'
+USER_KEY = 'NTAzMjcxMjA5NzM1NjYyMg==' # enronemail
+
 """
 To run these tests
 ------------------
@@ -15,7 +21,7 @@ To run these tests
 """
 def test_get_block_schematic_returns_json_string():
     """Test that the get_block_schematic() method returns a valid JSON string."""
-    client = OmniIndexClient('https://node1.omniindex.xyz/node', 'NTAzMjcxMjA5NzM1NjYyMg==', 'enronemail', 'Owner', 'enronemail')
+    client = OmniIndexClient(NODE, USER_KEY, 'enronemail', 'Owner', 'enronemail')
     json_string = client.get_block_schematic()
     assert type(json_string) == str
     assert json.loads(json_string) is not None
@@ -23,7 +29,7 @@ def test_get_block_schematic_returns_json_string():
 
 def test_get_folders_true_returns_json_string():
     """Test that the get_block_schematic() method returns a valid JSON string when showProtected is set to true."""
-    client = OmniIndexClient('https://node1.omniindex.xyz/node', 'NTAzMjcxMjA5NzM1NjYyMg==', 'enronemail', 'Owner', 'enronemail')
+    client = OmniIndexClient(NODE, USER_KEY, 'enronemail', 'Owner', 'enronemail')
     json_string = client.get_folders("true")
     assert type(json_string) == str
     assert json.loads(json_string) is not None

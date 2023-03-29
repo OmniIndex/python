@@ -1,6 +1,12 @@
 import requests
 import json
 
+# define constants
+HEADERS = {'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+
+
 class OmniIndexClient:
     """
     Instantiate an Omniindex client object to interact with the Omniindex API.
@@ -57,15 +63,12 @@ class OmniIndexClient:
             "user": self.user,
             "password": self.api_key
         })
-        headers = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        }
+        
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=HEADERS, data=payload)
         return response.text
 
-    def get_folders(self, showProtected):
+    def get_folders(self, show_protected):
         """
         Omniindex API call to get the folders in a block. This POST method will bring back the folders in a block that the user has access to.
         OmniIndex allows you to save ‘file structure’ to the blockchain. This capability allows you to securely encrypt your critical data as a file system from a variety of tools. 
@@ -99,14 +102,10 @@ class OmniIndexClient:
         payload = json.dumps({
             "unitName": self.unit_name,
             "server": self.server,
-            "showProtected": showProtected,
+            "showProtected": show_protected,
             "user": self.user,
             "password": self.api_key
         })
-        headers = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=HEADERS, data=payload)
         return response.text
