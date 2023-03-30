@@ -87,6 +87,51 @@ You will now have a JSON output of the folders:
    
    {'results': [{'directory': '/data/user/0/com.example.dropblock/cache'}, {'directory': 'Dropblock/2023-03-07'}, {'directory': 'Dropblock/2023-03-02'}, {'directory': 'Dropblock/2023-03-01'}, {'directory': 'Dropblock'}]}Tests
 
+get_searchchain
+---------------
+
+The `get_searchchain` method returns a JSON block for a search phrase within for a given block. You can use the `showRedacted` parameter to return the redacted data or the full data. There is one other parameter you can pass with this method, `block_id`, which is the block id you want to search within. If you don't pass this parameter, the method will search within the latest block.
+which is `fulltext` or `files` - this means that if you only want to search the encrypted file content, you can do that with the `files` parameter.
+
+..note::
+   The get_searchchain method is a perfect demonstration of how the OmniIndex Fully Homomorphic Encryption works. The data content is never decrpted, and the search is performed on the encrypted data. The search results are returned in encrypted form, and the data is never decrypted. Also note the two machine learning (Narrow AI) fields that are derived from the encrypted data:
+      - sentiment
+      - context
+
+Let's get stuck into a query on the blockchain:
+
+.. code-block:: python
+
+   searchresult = client.get_searchchain("true", "working with google workspace", "fulltext")
+   data = json.loads(searchresult)
+   print(data)
+
+You will now have a JSON output of the search results, which in this case will be every document that has the search phrase 'working with google workspace' in the document content, or title, showing the context and sentiment of that document:
+
+We could go on to pull a specific content block, or version of that content using the `get_files` method, and will explore that next.
+
+.. code-block:: bash
+
+   { "results" : [{"author" : "matthew@omniindex.io ,sibain@omniindex.io ,james@omniindex.io ","context" : "investment","datetime" : "2022-12-02 19:49:00","directory" : "/OmniIndex/demonstration","filecreateddate" : "2022-12-02 11:27:00","fileextension" : "application/vnd.google-apps.document","filemodifieddate" : "2022-12-02 19:49:00","filename" : "OmniIndex Distributed Data Platform with Google Workspace","file" : "JVBERi0xLjQKJdPr6eEKMSAwIG9iago8PC9UaXRsZSAoT21uaUluZGV4IERpc3RyaWJ1dGVkIERhdGEgUGxhdGZvcm0gd2l0aCBHb29nbGUgV29ya3NwYWNlKQovUHJvZHVjZXIgKFNraWEvUERGIG0xMTAgR29vZ2xlIERvY3MgUmVuZGVyZXIpPj4KZW5kb2JqCjMgMCBvYmoKPDwvY2EgMQovQk0gL05vcm1hbD4+CmVuZG9iago2IDAgb2JqCjw8L1R5cGUgL1hPYmplY3QKL1N1YnR5cGUgL0ltYWdlCi9XaWR0aCAyNTAwCi9IZWlnaHQgMTgwMwovQ29sb3JTcGFjZSAvRGV2aWNlUkdCCi9CaXRzUGVyQ29tcG9uZW50IDgKL0ZpbHRlciAvRmxhdGVEZWNvZGUKL0xlbmd0aCA0NDQ5MjY+PiBzdHJlYW0KeJzs3Xd8VHW+//H57d679+5dvevaQBGFLW5xXV0riHTQdfda1oKC0tKxixXFRk9mQu/SSZkSQugQWiDUhA5JICEJgZDe+2Tm8z2/OUHvXZIJTWBSXs/H+WMX4sznzJxzjOd9Pp+vpgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4AwMDAwIG4gCjAwMDA4MTYxMzQgMDAwMDAgbiAKMDAwMDgxNjM4NiAwMDAwMCBuIAowMDAwODE2OTI5IDAwMDAwIG4gCnRyYWlsZXIKPDwvU2l6ZSAzNwovUm9vdCAyNCAwIFIKL0luZm8gMSAwIFI+PgpzdGFydHhyZWYKODE3NDQ3CiUlRU9G","filesize" : "749017","fullpath" : "/OmniIndex/demonstration/OmniIndex Distributed Data Platform with Google Workspace","hash" : "FB25A50F51EF1B009ED4D2BBB2466A4427A1C3A3F3F09358677BE797126D2CC3","oidxid" : "7","priorhash" : "AAEB383EC54C3AE02A982DEBC03934869BAC737863369BE836F4F7EAFE48D495","sentiment" : "Happy"}]}
+
+(For convenience, we have excluded the majority of the Encryption hash)
+
+Datasets, dataframes and pandas
+-------------------------------
+
+If you want to use the popular Pandas dataframe library, remember that the OmniIndex API returns JSON string, which needs to be loaded as JSON using the JSON library.
+
+.. code-block:: python
+
+   import pandas as pd
+   import json
+
+   searchresult = client.get_searchchain("true", "working with google workspace", "fulltext")
+   data = json.loads(searchresult)
+   df = pd.DataFrame(data['results'])
+   print(df)
+
+Tests
 =====
 
 API endpoint tests
@@ -96,7 +141,16 @@ API endpoint tests
 
 .. code-block:: bash
 
-   pip install pytest   
+   pip install pytest
+
+.. note:: 
+   you will need to have set the following environment variables:
+    - 'OI_API_TEST_NODE' the node you want to test
+    - 'OI_API_TEST_USER_KEY' the user key you want to test
+    - 'OI_API_TEST_DEMO_KEY' another user key you want to test
+    - 'OI_API_TEST_USER_DEMO' the user name of the user key you want to test 
+    - 'OI_API_TEST_UNIT_DEMO' the unit name of the user key you want to test
+   
 
 - then run the tests:
 

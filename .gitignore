@@ -166,3 +166,8 @@ docs/_templates/
 
 # Aria errors catched by the linter
 .hintrc
+
+# Testing notebooks
+tests/tests-1.ipynb
+tests-1.ipynb
+tests-1.ipynb

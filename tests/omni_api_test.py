@@ -7,11 +7,15 @@ import pytest
 
 # define constants
 
-NODE = os.environ['OI_API_TEST_NODE']
+NODE = os.environ['OI_API_TEST_NODE'] # https://node1.omniindex.xyz/node
 USER_KEY = os.environ['OI_API_TEST_USER_KEY']
-USER_DEMO_KEY = os.environ['OI_API_TEST_USER_DEMO_KEY']
+USER_DEMO_KEY = os.environ['OI_API_TEST_DEMO_KEY']
 USER_DEMO = os.environ['OI_API_TEST_USER_DEMO']
 UNIT_DEMO = os.environ['OI_API_TEST_UNIT_DEMO']
+USER_DOC = os.environ['OI_API_TEST_USER_DOC'] # 'demonstration'
+USER_DOC_UNIT = os.environ['OI_API_TEST_USER_DOC_UNIT'] # 'demonstration'
+USER_DOC_KEY = os.environ['OI_API_TEST_USER_DOC_KEY']
+QUERY = "working with google workspace"
 
 """
 To run these tests
@@ -22,51 +26,6 @@ To run these tests
     $ python -m pytest tests/
 
 """
-def test_get_block_schematic_returns_json_string():
-    """Test that the get_block_schematic() method returns a valid JSON string."""
-    client = OmniIndexClient(NODE, USER_KEY, 'enronemail', 'Owner', 'enronemail')
-    json_string = client.get_block_schematic()
-    assert type(json_string) == str
-    assert json.loads(json_string) is not None
-    assert json.loads(json_string) != {}
-
-def test_json_string_contains_column_string():
-    """Test that the get_block_schematic() method returns a valid JSON string containing the string 'column_name'."""
-    client = OmniIndexClient(NODE, USER_KEY, 'enronemail', 'Owner', 'enronemail')
-    json_string = client.get_block_schematic()
-    json_data = json.loads(json_string)
-    assert "column_name" in json.dumps(json_data)
-
-def test_get_folders_true_returns_json_string():
-    """Test that the get_block_schematic() method returns a valid JSON string when showProtected is set to true."""
-    client = OmniIndexClient(NODE, USER_DEMO_KEY, UNIT_DEMO, 'Owner', USER_DEMO)
-    json_string = client.get_folders("true")
-    assert type(json_string) == str
-    assert json.loads(json_string) is not None
-    assert json.loads(json_string) != {}
-
-
-def test_get_folders_false_returns_json_string():
-    """Test that the get_block_schematic() method returns a valid JSON string when showProtected is set to false"""
-    client = OmniIndexClient(NODE, USER_DEMO_KEY, UNIT_DEMO, 'Owner', USER_DEMO)    
-    json_string = client.get_folders("false")
-    assert type(json_string) == str
-    assert json.loads(json_string) is not None
-    assert json.loads(json_string) != {}
-    json_data = json.loads(json_string)
-    assert "Data has been redacted" in json.dumps(json_data) # check that the data has been redacted
-
-
-@pytest.fixture
-def client():
-    return OmniIndexClient(
-        server="https://node1.omniindex.xyz",
-        api_key="NTAzMjcxMjA5NzM1NjYyMg==",
-        unit_name="enronemail",
-        block_type="Owner",
-        user="enronemail"
-    )
-
 def test_init(client):
     assert client.server == "https://node1.omniindex.xyz"
     assert client.api_key == "NTAzMjcxMjA5NzM1NjYyMg=="
@@ -91,3 +50,76 @@ def test_ssl_api_endpoint_getblockschema():
     response = requests.get(endpoint, verify=True) # make a request to the endpoint
     
     assert response.status_code == 200 # assert that the response is successful
+
+def test_get_block_schematic_returns_json_string():
+    """Test that the get_block_schematic() method returns a valid JSON string."""
+    client = OmniIndexClient(NODE, USER_KEY, 'enronemail', 'Owner', 'enronemail')
+    json_string = client.get_block_schematic()
+    assert type(json_string) == str
+    assert json.loads(json_string) is not None
+    assert json.loads(json_string) != {}
+
+def test_json_string_contains_column_string():
+    """Test that the get_block_schematic() method returns a valid JSON string containing the string 'column_name'."""
+    client = OmniIndexClient(NODE, USER_KEY, 'enronemail', 'Owner', 'enronemail')
+    json_string = client.get_block_schematic()
+    json_data = json.loads(json_string)
+    assert "column_name" in json.dumps(json_data)
+
+def test_get_folders_true_returns_json_string():
+    """Test that the get_block_schematic() method returns a valid JSON string when showProtected is set to true."""
+    client = OmniIndexClient(NODE, USER_DEMO_KEY, UNIT_DEMO, 'Owner', USER_DEMO)
+    json_string = client.get_folders("true")
+    assert type(json_string) == str
+    assert json.loads(json_string) is not None
+    assert json.loads(json_string) != {}
+
+def test_get_folders_false_returns_json_string():
+    """Test that the get_block_schematic() method returns a valid JSON string when showProtected is set to false"""
+    client = OmniIndexClient(NODE, USER_DEMO_KEY, UNIT_DEMO, 'Owner', USER_DEMO)    
+    json_string = client.get_folders("false")
+    assert type(json_string) == str
+    assert json.loads(json_string) is not None
+    assert json.loads(json_string) != {}
+    json_data = json.loads(json_string)
+    assert "Data has been redacted" in json.dumps(json_data) # check that the data has been redacted
+
+def test_get_searchchain_returns_json_string():
+    """Test that the get_search_results() method returns a valid JSON string."""
+    client = OmniIndexClient(NODE, USER_DOC_KEY, USER_DOC, 'Owner', USER_DOC_UNIT)
+    json_string = client.get_searchchain("true", QUERY , "fulltext")
+    assert type(json_string) == str
+    assert json.loads(json_string) is not None
+    assert json.loads(json_string) != {}
+    
+def test_get_searchchain_returns_query_with_sentiment():
+    """Test that the get_search_results() method returns a valid JSON string containing the query."""
+    client = OmniIndexClient(NODE, USER_DOC_KEY, USER_DOC_UNIT, 'Owner',USER_DOC)
+    json_string = client.get_searchchain("true", QUERY, "fulltext")
+    json_data = json.loads(json_string)
+    assert "sentiment" in json.dumps(json_data) # check that the sentiment is in the response
+
+def test_get_searchchain_returns_query_with_redaction():
+    """Test that the get_search_results() method returns a valid JSON string containing the query."""
+    client = OmniIndexClient(NODE, USER_DOC_KEY, USER_DOC_UNIT, 'Owner',USER_DOC)
+    json_string = client.get_searchchain("false", QUERY, "fulltext")
+    json_data = json.loads(json_string)
+    assert "Data has been redacted" in json.dumps(json_data) # check that the data has been redacted   
+
+def test_get_searchchain_returns_query_with_files_only():
+    """Test that the get_search_results() method returns a valid JSON string containing the query."""
+    client = OmniIndexClient(NODE, USER_DOC_KEY, USER_DOC_UNIT, 'Owner',USER_DOC)
+    json_string = client.get_searchchain("false", "Simon Bain", "files")
+    json_data = json.loads(json_string)
+    assert "CA110460FC7B856AF8A445868E25CFD1E07029B79A65B14043C2E186BDA6D0F6" in json.dumps(json_data) # check that the data has been redacted
+
+@pytest.fixture
+def client():
+    return OmniIndexClient(
+        server="https://node1.omniindex.xyz",
+        api_key="NTAzMjcxMjA5NzM1NjYyMg==",
+        unit_name="enronemail",
+        block_type="Owner",
+        user="enronemail"
+    )
+
