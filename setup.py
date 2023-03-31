@@ -10,10 +10,12 @@ HERE = path.abspath(path.dirname(__file__))
 
 setup(
     name="omniindex",
-    version="0.1.9",
+    version="0.1.10",
     packages=find_packages(),
     install_requires=[
         "requests",
+        "json",
+        "os"
     ],
     include_package_data=True,
     author="James Stanbridge",

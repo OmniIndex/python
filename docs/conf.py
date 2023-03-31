@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'OmniIndex Python Library'
 copyright = '2023, OmniIndex Inc'
 author = 'James Stanbridge'
-release = '0.1.9'
+release = '0.1.10'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -22,7 +22,8 @@ release = '0.1.9'
 extensions = [
     'recommonmark',
     'sphinx.ext.autodoc',
-    'sphinx.ext.viewcode'
+    'sphinx.ext.viewcode',
+    'sphinx.ext.todo'
 ]
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
@@ -36,3 +37,5 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 html_domain_indices = True # https://stackoverflow.com/questions/56336234/build-fail-sphinx-error-contents-rst-not-found
 html_domain_indices = [('*','genindex', 'genindex.html', 4)]
+# Display todos by setting to True
+todo_include_todos = True

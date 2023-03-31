@@ -32,7 +32,15 @@ def test_init(client):
     assert client.unit_name == "enronemail"
     assert client.block_type == "Owner"
     assert client.user == "enronemail"
-
+@pytest.fixture
+def client():
+    return OmniIndexClient(
+        server="https://node1.omniindex.xyz",
+        api_key="NTAzMjcxMjA5NzM1NjYyMg==",
+        unit_name="enronemail",
+        block_type="Owner",
+        user="enronemail"
+    )
 def test_ssl_api_endpoint():
     # import the requests library
     import requests
@@ -113,13 +121,16 @@ def test_get_searchchain_returns_query_with_files_only():
     json_data = json.loads(json_string)
     assert "CA110460FC7B856AF8A445868E25CFD1E07029B79A65B14043C2E186BDA6D0F6" in json.dumps(json_data) # check that the data has been redacted
 
-@pytest.fixture
-def client():
-    return OmniIndexClient(
-        server="https://node1.omniindex.xyz",
-        api_key="NTAzMjcxMjA5NzM1NjYyMg==",
-        unit_name="enronemail",
-        block_type="Owner",
-        user="enronemail"
-    )
+def test_getfiles_returns_query_with_context():
+    """Test that the get_search_results() method returns a valid JSON string containing the query."""
+    client = OmniIndexClient(NODE, USER_DOC_KEY, USER_DOC_UNIT, 'Owner',USER_DOC)
+    json_string = client.getfiles("true", "Demo_Docs" )
+    json_data = json.loads(json_string)
+    assert "Happy" in json.dumps(json_data) # check that the sentiment is in the response
 
+def test_getfiles_returns_query_with_redaction():
+    """Test that the get_search_results() method returns a valid JSON string containing the query."""
+    client = OmniIndexClient(NODE, USER_DOC_KEY, USER_DOC_UNIT, 'Owner',USER_DOC)
+    json_string = client.getfiles("false", "Demo_Docs" )
+    json_data = json.loads(json_string)
+    assert "Data has been redacted" in json.dumps(json_data) # check that the data has been redacted

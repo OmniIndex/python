@@ -116,10 +116,48 @@ We could go on to pull a specific content block, or version of that content usin
 
 (For convenience, we have excluded the majority of the Encryption hash)
 
+get_files
+---------
+
+In order to list files in a folder construct on the block chanin, we use the following (note that in this example we are using the pandas dataframe library)
+
+
+.. code-block:: python
+
+   fileresult = client.getfiles("true", "dropblock")
+   data = json.loads(fileresult)
+   data_df = pd.DataFrame(data['results'])
+   print(data_df)
+
+This gives you a list of files in the folder, and the encrypted content of the file:
+
+.. image:: ../getfiles.png
+
+You can see from the structure of the returned dataset that there is a 'context' field included, which is automatically calculated by the OmniIndex engine against a narrow machine learning
+model or ontology. This is a great way to quickly identify the context of a document, and can be used to filter search results.
+
+.. code-block:: bash
+   <class 'pandas.core.frame.DataFrame'>
+   RangeIndex: 20 entries, 0 to 19
+   Data columns (total 9 columns):
+   #   Column            Non-Null Count  Dtype 
+   ---  ------            --------------  ----- 
+   0   author            20 non-null     object
+   1   directory         20 non-null     object
+   2   fileextension     20 non-null     object
+   3   filemodifieddate  20 non-null     object
+   4   filename          20 non-null     object
+   5   filesize          20 non-null     object
+   6   fullpath          20 non-null     object
+   7   hash              20 non-null     object
+   8   context           2 non-null      object
+   dtypes: object(9)  
+
+
 Datasets, dataframes and pandas
 -------------------------------
 
-If you want to use the popular Pandas dataframe library, remember that the OmniIndex API returns JSON string, which needs to be loaded as JSON using the JSON library.
+If you want to use the popular Pandas dataframe library, the OmniIndex API returns JSON string, which needs to be loaded as JSON using the JSON library.
 
 .. code-block:: python
 
