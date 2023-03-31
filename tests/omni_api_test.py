@@ -16,6 +16,7 @@ USER_DOC = os.environ['OI_API_TEST_USER_DOC'] # 'demonstration'
 USER_DOC_UNIT = os.environ['OI_API_TEST_USER_DOC_UNIT'] # 'demonstration'
 USER_DOC_KEY = os.environ['OI_API_TEST_USER_DOC_KEY']
 QUERY = "working with google workspace"
+REDACT = "Data has been redacted"
 
 """
 To run these tests
@@ -112,7 +113,7 @@ def test_get_searchchain_returns_query_with_redaction():
     client = OmniIndexClient(NODE, USER_DOC_KEY, USER_DOC_UNIT, 'Owner',USER_DOC)
     json_string = client.get_searchchain("false", QUERY, "fulltext")
     json_data = json.loads(json_string)
-    assert "Data has been redacted" in json.dumps(json_data) # check that the data has been redacted   
+    assert REDACT in json.dumps(json_data) # check that the data has been redacted   
 
 def test_get_searchchain_returns_query_with_files_only():
     """Test that the get_search_results() method returns a valid JSON string containing the query."""
@@ -133,4 +134,18 @@ def test_getfiles_returns_query_with_redaction():
     client = OmniIndexClient(NODE, USER_DOC_KEY, USER_DOC_UNIT, 'Owner',USER_DOC)
     json_string = client.getfiles("false", "Demo_Docs" )
     json_data = json.loads(json_string)
-    assert "Data has been redacted" in json.dumps(json_data) # check that the data has been redacted
+    assert REDACT in json.dumps(json_data) # check that the data has been redacted
+
+def test_run_analytic_query_returns_query():
+    """Test that the get_search_results() method returns a valid JSON string containing the query."""
+    client = OmniIndexClient(NODE, USER_KEY, 'enronemail', 'Owner', 'enronemail')
+    json_string = client.run_analytic_query("true", "SELECT * FROM WHERE contentsearchableowners LIKE '%{enron}%' LIMIT 10 ")
+    json_data = json.loads(json_string)
+    assert "enron" in json.dumps(json_data) # check that the sentiment is in the response
+
+def test_run_analytic_query_with_redaction():
+    """Test that the get_search_results() method returns a redacted, valid JSON string containing the query."""
+    client = OmniIndexClient(NODE, USER_KEY, 'enronemail', 'Owner', 'enronemail')
+    json_string = client.run_analytic_query("false", "SELECT * FROM WHERE contentsearchableowners LIKE '%{enron}%' LIMIT 10 ")
+    json_data = json.loads(json_string)
+    assert REDACT in json.dumps(json_data) # check that the data has been redacted

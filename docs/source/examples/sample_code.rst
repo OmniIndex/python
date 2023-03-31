@@ -137,6 +137,7 @@ You can see from the structure of the returned dataset that there is a 'context'
 model or ontology. This is a great way to quickly identify the context of a document, and can be used to filter search results.
 
 .. code-block:: bash
+
    <class 'pandas.core.frame.DataFrame'>
    RangeIndex: 20 entries, 0 to 19
    Data columns (total 9 columns):
@@ -153,6 +154,24 @@ model or ontology. This is a great way to quickly identify the context of a docu
    8   context           2 non-null      object
    dtypes: object(9)  
 
+run_analytic_query
+-------------------
+
+This POST method will run a query on the Blockchain. To use it you are required to know the definition of the blocks that you are querying. If your where syntax includes data that has been encrypted for searching you need to use curly braces around your search string. EG: SELECT X FROM Y where thissearchableowners LIKE '%{what am i searching for}%'. The API will then convert this into a searchable ciphered stream.
+Running this query is akin to a SQL or OData query on any dataset, except this one is protected by OmniIndex’s patented FHE.
+The only thing to watch out for is that unlike standard SQL, there is no need to include the name of the datastore because that is defined by the unitName that we are working with. Similarly, there are no joins in ‘runanalyticquery’, but you can ‘SELECT’, ‘ORDER’, ‘LIMIT’ and set parameters including ‘LIKE’ to return the data that you want to query.
+Note that when returning ‘data objects’ as opposed to ‘file objects’, these will be base64 encoded and you will need to handle decoding in your own scripts. This is standard practice for all major data store providers. 
+Notice that the select statement is ‘SELECT * FROM WHERE […]’ 
+
+.. code-block:: python
+
+   query = "SELECT * FROM WHERE contentsearchableowners LIKE '%{enron}%' LIMIT 10 "
+   queryresult = client.run_analytic_query("true", query)
+   data = json.loads(queryresult)
+   data_df = pd.DataFrame(data['results'])
+   print(data_df)
+
+.. image:: ../runanalyticsquery.png
 
 Datasets, dataframes and pandas
 -------------------------------
