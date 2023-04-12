@@ -1,11 +1,16 @@
 import requests
 import json
+import logging
 
 # define constants
+DEBUG = True
 HEADERS = {'Content-Type': 'application/json',
             'Accept': 'application/json'
         }
 
+# Configure logging
+if DEBUG:
+    logging.basicConfig(filename='omni_api_log_file.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class OmniIndexClient:
     """
@@ -259,6 +264,57 @@ class OmniIndexClient:
             "password": self.api_key,
             "type": self.block_type
         })
+
+        response = requests.request("POST", url, headers=HEADERS, data=payload)
+        return response.text
+
+    def post_minedata(self, key, data):
+        """
+        This POST method will add a block to the chain. This is avery dynamic call, that requires a json object with the data to be sent to the server. 
+        This object MUST follow the follwing rules: Any object that needs to be encrypted, the key must have the word 'Encrypt' added to it. 
+        EG: fileContentsEncrypt. 
+        This will make sure that the SDK encrypts the value in all methods available prior to it being sent to a node. 
+
+        :param data: a string of JSON which is merged with the credentials payload to form the new block.
+        :param method: (hard coded) HTTP request method (POST)
+        :param url: (hard coded) URL to the Omniindex API endpoint
+        :param payload: JSON string containing the unit name, server, block type, user and API key.
+        :param headers: (hard coded) Content-Type and Accept headers.
+        :param response: Response from the API call.
+        :param key: the base encryption key to use for the new block.
+        :type method: str
+        :type url: str
+        :type data: str
+        :type payload: str
+        :type headers: dict
+        :type response: str
+        :type key: str
+
+        :returns: JSON string containing new block.
+
+        Reference to :func:`omniindex.api.OmniIndexClient.post_minedata`.
+        """
+        url = "https://api.omniindex.xyz/api_v1/minedata"
+
+        # Load the JSON strings into Python dictionaries
+        pre_payload1 = json.loads(data)
+
+        pre_payload2 = json.dumps({
+            "unitName": self.unit_name,
+            "server": self.server,
+            "user": self.user,
+            "password": self.api_key,
+            "Type": self.block_type,
+            "key": key
+        })
+
+        # Merge the two dictionaries
+        merged_payload = { **json.loads(pre_payload2), **pre_payload1}
+        payload = json.dumps(merged_payload)
+
+        if DEBUG:
+            logging.debug(f"payload value = {payload}")
+        
 
         response = requests.request("POST", url, headers=HEADERS, data=payload)
         return response.text
