@@ -171,3 +171,9 @@ docs/_templates/
 tests/tests-1.ipynb
 tests-1.ipynb
 tests-1.ipynb
+test.json
+
+# These are the file that is created by the linter for schema validation
+check.json
+check0.json 
+check1.json 
