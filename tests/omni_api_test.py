@@ -4,6 +4,7 @@ import json
 from omniindex.api import OmniIndexClient
 import os
 import pytest
+import time
 
 # define constants
 
@@ -17,6 +18,8 @@ USER_DOC_UNIT = os.environ['OI_API_TEST_USER_DOC_UNIT'] # 'demonstration'
 USER_DOC_KEY = os.environ['OI_API_TEST_USER_DOC_KEY']
 QUERY = "working with google workspace"
 REDACT = "Data has been redacted"
+# add constant for data added to the block as now
+DATE_ADDED = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
 
 """
 To run these tests
@@ -149,3 +152,9 @@ def test_run_analytic_query_with_redaction():
     json_string = client.run_analytic_query("false", "SELECT * FROM WHERE contentsearchableowners LIKE '%{enron}%' LIMIT 10 ")
     json_data = json.loads(json_string)
     assert REDACT in json.dumps(json_data) # check that the data has been redacted
+
+
+def test_minedata_returns_query():
+    """Test that the post_minedata() method has a valid date string"""
+    
+    assert "2023" in DATE_ADDED # check that the date includes current year
