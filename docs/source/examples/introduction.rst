@@ -12,16 +12,26 @@ Getting Started
 To use the library, start by importing the `OmniIndexClient` and `os` class:
 **assumes you have already set an environmental variable for your API key using your os.** If you have not, you can set it using the following command: 
 
+For Linux and Mac OS
+
 .. code-block:: bash 
 
    export OMNIINDEX_API_KEY=your_api_key
+
+For Windows
+
+.. code-block:: doscon
+
+   setx OMNIINDEX_API_KEY your_api_key
+
+Usage
 
 .. code-block:: python
 
    import os 
    from omniindex import OmniIndexClient
 
-Next, create an instance of the `OmniIndexClient` class with your API credentials and desired parameters:
+Next, create an instance of the `OmniIndexClient` class with your API credentials and desired parameters: We strongly recommend you *never* use typed strings for your API credentials. Instead, use environment variables to store your API credentials and retrieve them using the `os` class.
 Refer to your OmniIndex API credentials for the following parameters which are required to create an instance of the `OmniIndexClient` class:
 
 .. code-block:: python

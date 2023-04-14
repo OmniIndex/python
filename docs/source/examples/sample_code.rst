@@ -23,7 +23,7 @@ Set up the OmniIndex API client
 
    export OMNIINDEX_API_KEY=your_api_key 
 
-- in this example we are using our demonstration api_key = **NTAzMjcxMjA5NzM1NjYyMg==**
+- now you can start coding!
 
 .. code-block:: python
 
@@ -93,7 +93,8 @@ get_searchchain
 The `get_searchchain` method returns a JSON block for a search phrase within for a given block. You can use the `showRedacted` parameter to return the redacted data or the full data. There is one other parameter you can pass with this method, `block_id`, which is the block id you want to search within. If you don't pass this parameter, the method will search within the latest block.
 which is `fulltext` or `files` - this means that if you only want to search the encrypted file content, you can do that with the `files` parameter.
 
-..note::
+.. note::
+
    The get_searchchain method is a perfect demonstration of how the OmniIndex Fully Homomorphic Encryption works. The data content is never decrpted, and the search is performed on the encrypted data. The search results are returned in encrypted form, and the data is never decrypted. Also note the two machine learning (Narrow AI) fields that are derived from the encrypted data:
       - sentiment
       - context
@@ -157,7 +158,13 @@ model or ontology. This is a great way to quickly identify the context of a docu
 run_analytic_query
 -------------------
 
-This POST method will run a query on the Blockchain. To use it you are required to know the definition of the blocks that you are querying. If your where syntax includes data that has been encrypted for searching you need to use curly braces around your search string. EG: SELECT X FROM Y where thissearchableowners LIKE '%{what am i searching for}%'. The API will then convert this into a searchable ciphered stream.
+This POST method will run a query on the Blockchain. To use it you are required to know the definition of the blocks that you are querying. If your where syntax includes data that has been encrypted for searching you need to use curly braces around your search string. EG: 
+
+.. code-block:: sql
+   
+   SELECT X FROM Y where thissearchableowners LIKE '%{what am i searching for}%'. 
+   
+The API will then convert this into a searchable ciphered stream.
 Running this query is akin to a SQL or OData query on any dataset, except this one is protected by OmniIndex’s patented FHE.
 The only thing to watch out for is that unlike standard SQL, there is no need to include the name of the datastore because that is defined by the unitName that we are working with. Similarly, there are no joins in ‘runanalyticquery’, but you can ‘SELECT’, ‘ORDER’, ‘LIMIT’ and set parameters including ‘LIKE’ to return the data that you want to query.
 Note that when returning ‘data objects’ as opposed to ‘file objects’, these will be base64 encoded and you will need to handle decoding in your own scripts. This is standard practice for all major data store providers. 
@@ -172,6 +179,28 @@ Notice that the select statement is ‘SELECT * FROM WHERE […]’
    print(data_df)
 
 .. image:: ../runanalyticsquery.png
+
+post_minedata
+-------------
+
+This POST method will add a new block on the Blockchain. To use it you are required to know the definition of the blocks that you are adding to. Blockchain by definition are immutable, so you cannot update a block, but you can add a new block with updated data. It is also necessary to pass the master encryption key when creating a new block
+as always, we would recommend that you never type this in your code, but use environment variables or a config file to store this information. Having followed these strict rules, you need
+only pass 2 parameters to the API which are the master encryption key and the data that you want to add to the blockchain. The data is passed as a JSON string, and the API will return only status code 200. It will do this even if you are unsuccesful in adding to the blockchain, 
+we are very careful not to return any information that could be used to identify the data that is on your blockchain, even if the appaling event of your encryption key being known to a bad actor.
+
+.. warning:: 
+   If you are using the OmniIndex API to add data to the blockchain, you are responsible for ensuring that the data you are adding is compliant with the GDPR and other data protection laws. 
+   You are also responsible for ensuring that you have the right to add the data to the blockchain.
+
+.. note:: 
+   as of version 0.1.11, the JSON parser will only accept strings, so you will need to convert any numbers to strings before adding to the blockchain.
+
+.. code-block:: python
+
+   # even though the data is JSON, it needs to be passed as a string, see the unix timestamp and filesize examples below
+   data = '{"blahEncrypt": "blah1", "contentsearchable": "Some fabulous content", "dateAdded": "2021-01-01", "dateModified": "190266420000", "fileExtension": "txt", "fileSize": "100", "filename": "test.txt"}'
+   result = client.post_minedata(MASTER_KEY, data)
+   print(result)
 
 Datasets, dataframes and pandas
 -------------------------------

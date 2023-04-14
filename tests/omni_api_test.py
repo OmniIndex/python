@@ -1,4 +1,3 @@
-import pytest
 import json
 from omniindex.api import OmniIndexClient
 import os
@@ -138,7 +137,7 @@ def test_run_analytic_query_with_redaction():
     assert REDACT in json.dumps(json_data) # check that the data has been redacted
 
 
-def test_minedata_returns_query():
+def test_minedata_date_valid():
     """Test that the post_minedata() method has a valid date string"""
     
     assert "2023" in DATE_ADDED # check that the date includes current year

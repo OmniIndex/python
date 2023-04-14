@@ -23,8 +23,23 @@ pip setup.py install
 
 ## Usage
 
-The library needs to be configured with your account's secret keys which are available from your account website. Either set them as the OMNIINDEX_API_PASSWORD environment variable before using the library:
+The library needs to be configured with your account's secret keys which are available from your account onboarding packet. Set them as the OMNIINDEX_API_PASSWORD environment variable before using the library:
+We would recommed you set these for
+
+* OMNIINDEX_API_PASSWORD
+* OMNIINDEX_API_USER
+* OMNIINDEX_API_NODE
+* OMNIINDEX_API_TYPE
+* OMNIINDEX_API_UNIT
+
+Linux / bash etc
 
 ```bash
 export OMNIINDEX_API_PASSWORD='sk-...'
+```
+
+Windows
+
+```bash
+setx OMNIINDEX_API_PASSWORD 'sk-...'
 ```
