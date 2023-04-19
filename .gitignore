@@ -180,3 +180,4 @@ check1.json
 
 # This batch file is used to set the environment variables for the tests on Windows
 omni_envvars.bat
+omniindex/python.code-workspace
