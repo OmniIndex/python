@@ -1,0 +1,7 @@
+default:
+  before_script:
+    - pip install --upgrade pip
+    - python -V
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
