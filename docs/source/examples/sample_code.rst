@@ -23,7 +23,7 @@ Set up the OmniIndex API client
 
    export OMNIINDEX_API_KEY=your_api_key 
 
-- in this example we are using our demonstration api_key = **NTAzMjcxMjA5NzM1NjYyMg==**
+- now you can start coding!
 
 .. code-block:: python
 
@@ -93,7 +93,8 @@ get_searchchain
 The `get_searchchain` method returns a JSON block for a search phrase within for a given block. You can use the `showRedacted` parameter to return the redacted data or the full data. There is one other parameter you can pass with this method, `block_id`, which is the block id you want to search within. If you don't pass this parameter, the method will search within the latest block.
 which is `fulltext` or `files` - this means that if you only want to search the encrypted file content, you can do that with the `files` parameter.
 
-..note::
+.. note::
+
    The get_searchchain method is a perfect demonstration of how the OmniIndex Fully Homomorphic Encryption works. The data content is never decrpted, and the search is performed on the encrypted data. The search results are returned in encrypted form, and the data is never decrypted. Also note the two machine learning (Narrow AI) fields that are derived from the encrypted data:
       - sentiment
       - context
@@ -157,7 +158,13 @@ model or ontology. This is a great way to quickly identify the context of a docu
 run_analytic_query
 -------------------
 
-This POST method will run a query on the Blockchain. To use it you are required to know the definition of the blocks that you are querying. If your where syntax includes data that has been encrypted for searching you need to use curly braces around your search string. EG: SELECT X FROM Y where thissearchableowners LIKE '%{what am i searching for}%'. The API will then convert this into a searchable ciphered stream.
+This POST method will run a query on the Blockchain. To use it you are required to know the definition of the blocks that you are querying. If your where syntax includes data that has been encrypted for searching you need to use curly braces around your search string. EG: 
+
+.. code-block:: sql
+   
+   SELECT X FROM Y where thissearchableowners LIKE '%{what am i searching for}%'. 
+   
+The API will then convert this into a searchable ciphered stream.
 Running this query is akin to a SQL or OData query on any dataset, except this one is protected by OmniIndex’s patented FHE.
 The only thing to watch out for is that unlike standard SQL, there is no need to include the name of the datastore because that is defined by the unitName that we are working with. Similarly, there are no joins in ‘runanalyticquery’, but you can ‘SELECT’, ‘ORDER’, ‘LIMIT’ and set parameters including ‘LIKE’ to return the data that you want to query.
 Note that when returning ‘data objects’ as opposed to ‘file objects’, these will be base64 encoded and you will need to handle decoding in your own scripts. This is standard practice for all major data store providers. 
@@ -172,6 +179,45 @@ Notice that the select statement is ‘SELECT * FROM WHERE […]’
    print(data_df)
 
 .. image:: ../runanalyticsquery.png
+
+post_minedata
+-------------
+
+This POST method will add a new block on the Blockchain. To use it you are required to know the definition of the blocks that you are adding to. Blockchain by definition are immutable, so you cannot update a block, but you can add a new block with updated data. It is also necessary to pass the master encryption key when creating a new block
+as always, we would recommend that you never type this in your code, but use environment variables or a config file to store this information. Having followed these strict rules, you need
+only pass 2 parameters to the API which are the master encryption key and the data that you want to add to the blockchain. The data is passed as a JSON string, and the API will return only status code 200. It will do this even if you are unsuccesful in adding to the blockchain, 
+we are very careful not to return any information that could be used to identify the data that is on your blockchain, even if the appaling event of your encryption key being known to a bad actor.
+
+.. note::        
+            1. Create a master encryption key. This is a key that only you will ever know and will be used to encrypt all data in the OmniIndex Blockchain. This key is the heart of the OmniIndex Blockchain and what makes us so unique. So long as this key is safe, your data
+            can never be compromised. For this reason, you must keep this key safe and never share it with anyone. If you lose this key, you will lose all of your data. There are many enterprise grade encryption tools available to help you create and store your master key.
+            2. Set up your omniindex client with the unit_name of your choice (This should map to the business unit or use case for this blockchain. It is the name that will be used to identify your Blockchain. It is also the name that will be used to identify your Blockchain when you are querying it or running data analytics against it), user/password pairings.
+            3. Create a JSON object with the data you want to store in the OmniIndex Blockchain. This object must follow the rules outlined above.
+        
+        Think hard about the data you want to store in the OmniIndex Blockchain. You can store anything you want, unstructured blobs of 'stuff' or structured filesystems. The choice is yours. The only thing you need to remember is that there is no going back. The schema of the blockchain is set at the time of creation and cannot be changed. (If it could, it would not be the immutable ledger or system of record that is a key feature of OmniIndex).
+           
+
+
+.. warning:: 
+   If you are using the OmniIndex API to add data to the blockchain, you are responsible for ensuring that the data you are adding is compliant with the GDPR and other data protection laws. 
+   You are also responsible for ensuring that you have the right to add the data to the blockchain.
+
+.. note:: 
+   as of version 0.1.11, the JSON parser will only accept strings, so you will need to convert any numbers to strings before adding to the blockchain.
+
+.. code-block:: python
+
+   import os
+   NODE = os.environ.get('OMNIINDEX_NODE')
+   USER_KEY = os.environ.get('OMNIINDEX_USER_KEY')
+   UNIT_NAME = os.environ.get('OMNIINDEX_UNIT_NAME')
+   USER = os.environ.get('OMNIINDEX_USER')
+
+   client = OmniIndexClient(NODE, USER_KEY, UNIT_NAME, 'Owner', USER)
+   # even though the data is JSON, it needs to be passed as a string, see the unix timestamp and filesize examples below
+   data = '{"blahEncrypt": "blah1", "contentsearchable": "Some fabulous content", "dateAdded": "2021-01-01", "dateModified": "190266420000", "fileExtension": "txt", "fileSize": "100", "filename": "test.txt"}'
+   result = client.post_minedata(MASTER_KEY, data)
+   print(result)
 
 Datasets, dataframes and pandas
 -------------------------------
@@ -190,6 +236,9 @@ If you want to use the popular Pandas dataframe library, the OmniIndex API retur
 
 Tests
 =====
+
+There is a set of tests that can be run against the API endpoints. These are not exhaustive, but they do cover the main functionality of the API and are included in the file
+tools/omni_api_test.py and utilise the `pytest` package which should be installed in your virtual environment.
 
 API endpoint tests
 ------------------
@@ -228,6 +277,10 @@ Redaction test
 When you run a call with showRedacted=True, the API will return the redacted data. To make sure that the redaction is working correctly, we have a test that checks the redaction has happened when set to 'false'
 
 .. code-block:: python
+
+   USER_DEMO_KEY = os.getenv('OI_API_TEST_DEMO_KEY')
+   UNIT_DEMO = os.getenv('OI_API_TEST_UNIT_DEMO')
+   USER_DEMO = os.getenv('OI_API_TEST_USER_DEMO')
    
    def test_get_folders_false_returns_json_string():
     """Test that the get_block_schematic() method returns a valid JSON string when showProtected is set to false"""
@@ -238,3 +291,18 @@ When you run a call with showRedacted=True, the API will return the redacted dat
     assert json.loads(json_string) != {}
     json_data = json.loads(json_string)
     assert "Data has been redacted" in json.dumps(json_data) # check that the data has been redacted
+
+Count of chains in the blockchain test
+--------------------------------------
+
+This test is super useful to check how many chains there are in the blockchain, most often used when you want to know the number of chains with a particular data set within (although this test just returns the total, you can create your own SQL command for more complex queries)
+
+.. code-block:: python
+
+   def test_get_blockchain_count():
+    """Test that the get_blockchain_count() method returns a valid JSON string"""
+    client = OmniIndexClient(NODE, USER_DEMO_KEY, UNIT_DEMO, 'Owner', USER_DEMO)    # user your own api key etc here
+   queryresult = client.run_analytic_query("false", "SELECT COUNT (*) FROM ")
+   data = json.loads(queryresult)
+   assert data['results'][0]['count'] >= 1
+   

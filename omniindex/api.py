@@ -29,6 +29,7 @@ class OmniIndexClient:
     :param user: The user to use for the transaction.
     :type user: str
     :param block_type: The type of block to use for the transaction.
+    :type block_type: str
 
     For more information on the client object and elements refer to the `OmniIndex Documentation <https://omniindex.io/docs/>`_.
     
@@ -280,10 +281,17 @@ class OmniIndexClient:
 
     def post_minedata(self, key, data):
         """
-        This POST method will add a block to the chain. This is avery dynamic call, that requires a json object with the data to be sent to the server. 
+        This POST method will add a block to the chain. This is a very dynamic call, that requires a json object with the data to be sent to the server. 
+        As of version 0.1.11, the JSON parser will not allow anything other than a string to be sent to the server. We will be adding INT and FLOAT support in the future.
+        
         This object MUST follow the follwing rules: Any object that needs to be encrypted, the key must have the word 'Encrypt' added to it. 
         EG: fileContentsEncrypt. 
-        This will make sure that the SDK encrypts the value in all methods available prior to it being sent to a node. 
+        
+        This will ensure that the SDK encrypts the value in all methods available prior to it being sent to a node. 
+        
+        All things OmniIndex, tend to make incredibly complex things, for which we hold multiple patents, very simple indeed. `minedata` is no exception, indeed it is the poster child for simplicity. To create an OmniIndex Blockchain you simply need to create a 
+        master encryption key, declare the unit_name of your choice, a user and their api key / passphrase / password (whatever you want).
+        
 
         :param data: a string of JSON which is merged with the credentials payload to form the new block.
         :param method: (hard coded) HTTP request method (POST)
