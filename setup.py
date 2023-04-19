@@ -14,8 +14,10 @@ setup(
     packages=find_packages(),
     install_requires=[
         "requests",
-        "json",
-        "os"
+        "pandas",
+        "pytest",
+        "simplejson",
+        "delorean"
     ],
     include_package_data=True,
     author="James Stanbridge",
