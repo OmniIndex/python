@@ -13,6 +13,8 @@ UNIT_DEMO = os.environ['OI_API_TEST_UNIT_DEMO']
 USER_DOC = os.environ['OI_API_TEST_USER_DOC'] # 'demonstration'
 USER_DOC_UNIT = os.environ['OI_API_TEST_USER_DOC_UNIT'] # 'demonstration'
 USER_DOC_KEY = os.environ['OI_API_TEST_USER_DOC_KEY']
+MASTER_KEY = os.environ['OI_API_MASTER_KEY_DEMO'] # master key for demonstration
+
 QUERY = "working with google workspace"
 REDACT = "Data has been redacted"
 # add constant for data added to the block as now
@@ -136,8 +138,15 @@ def test_run_analytic_query_with_redaction():
     json_data = json.loads(json_string)
     assert REDACT in json.dumps(json_data) # check that the data has been redacted
 
+def test_get_blockchain_count():
+    """Test that the get_blockchain_count() method returns a valid JSON string"""
+    client = OmniIndexClient(NODE, USER_DEMO_KEY, UNIT_DEMO, 'Owner', USER_DEMO)    # user your own api key etc here
+    queryresult = client.run_analytic_query("false", "SELECT COUNT (*) FROM ")
+    data = json.loads(queryresult)
+    assert int(data['results'][0]['count']) >= 1
 
 def test_minedata_date_valid():
     """Test that the post_minedata() method has a valid date string"""
     
     assert "2023" in DATE_ADDED # check that the date includes current year
+    

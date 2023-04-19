@@ -220,6 +220,9 @@ If you want to use the popular Pandas dataframe library, the OmniIndex API retur
 Tests
 =====
 
+There is a set of tests that can be run against the API endpoints. These are not exhaustive, but they do cover the main functionality of the API and are included in the file
+tools/omni_api_test.py and utilise the `pytest` package which should be installed in your virtual environment.
+
 API endpoint tests
 ------------------
 
@@ -257,6 +260,10 @@ Redaction test
 When you run a call with showRedacted=True, the API will return the redacted data. To make sure that the redaction is working correctly, we have a test that checks the redaction has happened when set to 'false'
 
 .. code-block:: python
+
+   USER_DEMO_KEY = os.getenv('OI_API_TEST_DEMO_KEY')
+   UNIT_DEMO = os.getenv('OI_API_TEST_UNIT_DEMO')
+   USER_DEMO = os.getenv('OI_API_TEST_USER_DEMO')
    
    def test_get_folders_false_returns_json_string():
     """Test that the get_block_schematic() method returns a valid JSON string when showProtected is set to false"""
@@ -267,3 +274,18 @@ When you run a call with showRedacted=True, the API will return the redacted dat
     assert json.loads(json_string) != {}
     json_data = json.loads(json_string)
     assert "Data has been redacted" in json.dumps(json_data) # check that the data has been redacted
+
+Count of chains in the blockchain test
+--------------------------------------
+
+This test is super useful to check how many chains there are in the blockchain, most often used when you want to know the number of chains with a particular data set within (although this test just returns the total, you can create your own SQL command for more complex queries)
+
+.. code-block:: python
+
+   def test_get_blockchain_count():
+    """Test that the get_blockchain_count() method returns a valid JSON string"""
+    client = OmniIndexClient(NODE, USER_DEMO_KEY, UNIT_DEMO, 'Owner', USER_DEMO)    # user your own api key etc here
+   queryresult = client.run_analytic_query("false", "SELECT COUNT (*) FROM ")
+   data = json.loads(queryresult)
+   assert data['results'][0]['count'] >= 1
+   
