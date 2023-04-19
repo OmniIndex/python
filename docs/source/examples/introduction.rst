@@ -39,7 +39,7 @@ Refer to your OmniIndex API credentials for the following parameters which are r
    your_api_key = os.environ.get("OMNIINDEX_API_KEY")
 
    client = OmniIndexClient(
-       server="https://omniindex.node", # the OmniIndex API blockchain node
+       server="https://[your node server address]", # the OmniIndex API blockchain node
        api_key="your_api_key", # your OmniIndex API key
        unit_name="your_unit_name", # your unit name 
        block_type="your_block_type", # your block type 
