@@ -13,6 +13,7 @@ Welcome to OmniIndex Python Library's documentation!
    modules
    source/examples/introduction
    source/examples/sample_code
+   source/examples/create_keys
 
 
 

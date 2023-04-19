@@ -188,6 +188,16 @@ as always, we would recommend that you never type this in your code, but use env
 only pass 2 parameters to the API which are the master encryption key and the data that you want to add to the blockchain. The data is passed as a JSON string, and the API will return only status code 200. It will do this even if you are unsuccesful in adding to the blockchain, 
 we are very careful not to return any information that could be used to identify the data that is on your blockchain, even if the appaling event of your encryption key being known to a bad actor.
 
+.. note::        
+            1. Create a master encryption key. This is a key that only you will ever know and will be used to encrypt all data in the OmniIndex Blockchain. This key is the heart of the OmniIndex Blockchain and what makes us so unique. So long as this key is safe, your data
+            can never be compromised. For this reason, you must keep this key safe and never share it with anyone. If you lose this key, you will lose all of your data. There are many enterprise grade encryption tools available to help you create and store your master key.
+            2. Set up your omniindex client with the unit_name of your choice (This should map to the business unit or use case for this blockchain. It is the name that will be used to identify your Blockchain. It is also the name that will be used to identify your Blockchain when you are querying it or running data analytics against it), user/password pairings.
+            3. Create a JSON object with the data you want to store in the OmniIndex Blockchain. This object must follow the rules outlined above.
+        
+        Think hard about the data you want to store in the OmniIndex Blockchain. You can store anything you want, unstructured blobs of 'stuff' or structured filesystems. The choice is yours. The only thing you need to remember is that there is no going back. The schema of the blockchain is set at the time of creation and cannot be changed. (If it could, it would not be the immutable ledger or system of record that is a key feature of OmniIndex).
+           
+
+
 .. warning:: 
    If you are using the OmniIndex API to add data to the blockchain, you are responsible for ensuring that the data you are adding is compliant with the GDPR and other data protection laws. 
    You are also responsible for ensuring that you have the right to add the data to the blockchain.
@@ -197,6 +207,13 @@ we are very careful not to return any information that could be used to identify
 
 .. code-block:: python
 
+   import os
+   NODE = os.environ.get('OMNIINDEX_NODE')
+   USER_KEY = os.environ.get('OMNIINDEX_USER_KEY')
+   UNIT_NAME = os.environ.get('OMNIINDEX_UNIT_NAME')
+   USER = os.environ.get('OMNIINDEX_USER')
+
+   client = OmniIndexClient(NODE, USER_KEY, UNIT_NAME, 'Owner', USER)
    # even though the data is JSON, it needs to be passed as a string, see the unix timestamp and filesize examples below
    data = '{"blahEncrypt": "blah1", "contentsearchable": "Some fabulous content", "dateAdded": "2021-01-01", "dateModified": "190266420000", "fileExtension": "txt", "fileSize": "100", "filename": "test.txt"}'
    result = client.post_minedata(MASTER_KEY, data)
