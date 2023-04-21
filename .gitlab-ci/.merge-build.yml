@@ -1,8 +1,10 @@
 build::pypi:
   stage: build
+  environment: staging
   script:
     - python ./setup.py sdist bdist_wheel
   artifacts:
+    name: "${CI_COMMIT_BRANCH}-${CI_ENVIRONMENT_NAME}"
     paths:
       - dist/*.whl
       - dist/*.gz
@@ -12,41 +14,16 @@ build::pypi:
 
 doc::sphinx:
   stage: documentation
+  environment: staging
   needs:
     - build::pypi
   script:
     - pip install sphinx recommonmark sphinx_rtd_theme
     - sphinx-build -M html ./docs documentation
   artifacts:
+    name: "${CI_COMMIT_BRANCH}-${CI_ENVIRONMENT_NAME}-docs"
     paths:
       - documentation/*
     expire_in: 15 minutes
-  only:
-    - merge_requests
-
-deploy::pypi:
-  stage: deploy
-  needs:
-    - job: build::pypi
-      artifacts: true
-  dependencies:
-    - build::pypi
-  script:
-    - echo "This job deploys something quickly."
-  only:
-    - merge_requests
-
-deploy::pypi::documentation:
-  stage: deploy
-  needs:
-    - job: build::pypi
-      artifacts: true
-    - job: doc::sphinx
-      artifacts: true
-  dependencies:
-    - build::pypi
-    - doc::sphinx
-  script:
-    - echo "This job deploys documentation quickly."
   only:
     - merge_requests

@@ -2,6 +2,7 @@ include:
   - '/.gitlab-ci/.before-script-template.yml'
   - '/.gitlab-ci/.feature-build.yml' # handles any feature/* branch commits
   - '/.gitlab-ci/.merge-build.yml' # handles any merge commits
+  - '/.gitlab-ci/.tag-build.yml' # handles any merge commits
 
 stages:
   - build

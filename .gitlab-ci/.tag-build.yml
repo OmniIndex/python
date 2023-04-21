@@ -1,14 +1,36 @@
-build::pypi:
+build::stage::pypi:
   stage: build
+  environment: staging
   script:
     - python ./setup.py sdist bdist_wheel
     - pip install twine
-    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*  
+    - TWINE_PASSWORD=${TWINE_API_TOKEN} TWINE_USERNAME=__token__ python -m twine upload --repository testpypi dist/*  
   artifacts:
+    name: "${CI_COMMIT_BRANCH}-${CI_ENVIRONMENT_NAME}"
     paths:
       - dist/*.whl
       - dist/*.gz
-    expire_in: 15 minutes
+    expire_in: 7 days
+  only:
+    - tags
+  except:
+    - branches
+
+build::pypi:
+  stage: build
+  environment: production
+  script:
+    - python ./setup.py sdist bdist_wheel
+    - pip install twine
+    # Uncomment below to push to a gitlab package repository
+    # - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+    - TWINE_PASSWORD=${TWINE_API_TOKEN} TWINE_USERNAME=__token__ python -m twine upload --repository omniindex dist/*  
+  artifacts:
+    name: "${CI_COMMIT_BRANCH}-${CI_ENVIRONMENT_NAME}"
+    paths:
+      - dist/*.whl
+      - dist/*.gz
+    expire_in: 7 days
   only:
     - tags
   except:
@@ -16,46 +38,17 @@ build::pypi:
 
 doc::sphinx:
   stage: documentation
+  environment: production
   needs:
     - build::pypi
   script:
     - pip install sphinx recommonmark sphinx_rtd_theme
     - sphinx-build -M html ./docs documentation
   artifacts:
+    name: "${CI_COMMIT_BRANCH}-${CI_ENVIRONMENT_NAME}-docs"
     paths:
       - documentation/*
-    expire_in: 15 minutes
-  only:
-    - tags
-  except:
-    - branches
-
-deploy::pypi:
-  stage: deploy
-  needs:
-    - job: build::pypi
-      artifacts: true
-  dependencies:
-    - build::pypi
-  script:
-    - echo "This job deploys something quickly."
-  only:
-    - tags
-  except:
-    - branches
-
-deploy::pypi::documentation:
-  stage: deploy
-  needs:
-    - job: build::pypi
-      artifacts: true
-    - job: doc::sphinx
-      artifacts: true
-  dependencies:
-    - build::pypi
-    - doc::sphinx
-  script:
-    - echo "This job deploys documentation quickly."
+    expire_in: 7 days
   only:
     - tags
   except:
