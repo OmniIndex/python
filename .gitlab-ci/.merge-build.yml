@@ -1,0 +1,52 @@
+build::pypi:
+  stage: build
+  script:
+    - python ./setup.py sdist bdist_wheel
+  artifacts:
+    paths:
+      - dist/*.whl
+      - dist/*.gz
+    expire_in: 15 minutes
+  only:
+    - merge_requests
+
+doc::sphinx:
+  stage: documentation
+  needs:
+    - build::pypi
+  script:
+    - pip install sphinx recommonmark sphinx_rtd_theme
+    - sphinx-build -M html ./docs documentation
+  artifacts:
+    paths:
+      - documentation/*
+    expire_in: 15 minutes
+  only:
+    - merge_requests
+
+deploy::pypi:
+  stage: deploy
+  needs:
+    - job: build::pypi
+      artifacts: true
+  dependencies:
+    - build::pypi
+  script:
+    - echo "This job deploys something quickly."
+  only:
+    - merge_requests
+
+deploy::pypi::documentation:
+  stage: deploy
+  needs:
+    - job: build::pypi
+      artifacts: true
+    - job: doc::sphinx
+      artifacts: true
+  dependencies:
+    - build::pypi
+    - doc::sphinx
+  script:
+    - echo "This job deploys documentation quickly."
+  only:
+    - merge_requests

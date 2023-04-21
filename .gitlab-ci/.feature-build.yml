@@ -1,0 +1,62 @@
+build::feature::pypi:
+  stage: build
+  script:
+    - python ./setup.py sdist bdist_wheel
+    - pip install twine
+  artifacts:
+    name: "${CI_COMMIT_BRANCH}"
+    paths:
+      - dist/*.whl
+      - dist/*.gz
+    expire_in: 10 minutes
+  only:
+    - /^feature\/.*$/
+  tags:
+    - connectors-python
+
+doc::feature::sphinx:
+  stage: documentation
+  needs:
+    - build::feature::pypi
+  script:
+    - pip install sphinx recommonmark sphinx_rtd_theme
+    - sphinx-build -M html ./docs documentation
+  artifacts:
+    paths:
+      - documentation/*
+    expire_in: 15 minutes
+  only:
+    - /^feature\/.*$/
+  tags:
+    - connectors-python
+
+deploy::feature::pypi:
+  stage: deploy
+  needs:
+    - job: build::feature::pypi
+      artifacts: true
+  dependencies:
+    - build::feature::pypi
+  script:
+    - echo "This job deploys something quickly."
+  only:
+    - /^feature\/.*$/
+  tags:
+    - connectors-python
+
+deploy::feature::pypi::documentation:
+  stage: deploy
+  needs:
+    - job: build::feature::pypi
+      artifacts: true
+    - job: doc::feature::sphinx
+      artifacts: true
+  dependencies:
+    - build::feature::pypi
+    - doc::feature::sphinx
+  script:
+    - echo "This job deploys some documents quickly."
+  only:
+    - /^feature\/.*$/
+  tags:
+    - connectors-python

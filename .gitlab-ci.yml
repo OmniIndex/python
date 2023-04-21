@@ -1,27 +1,11 @@
 include:
   - '/.gitlab-ci/.before-script-template.yml'
+  - '/.gitlab-ci/.feature-build.yml' # handles any feature/* branch commits
+  - '/.gitlab-ci/.merge-build.yml' # handles any merge commits
 
 stages:
   - build
+  - documentation
   - deploy
 
 image: python:3.9
-
-build_pypi:
-  stage: build
-  script:
-    - python ./setup.py sdist bdist_wheel
-    - pip install twine
-    - echo "This job builds something quickly."
-  only:
-    - /^feature\/.*$/
-    - merge_requests
-  tags: [connectors-python]
-
-deploy_pypi:
-  stage: deploy
-  script:
-    - echo "This job deploys something quickly."
-  only:
-    - merge_requests
-  tags: [connectors-python]
