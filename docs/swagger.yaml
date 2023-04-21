@@ -1,0 +1,281 @@
+---
+openapi: 3.0.0
+info:
+  title: OmniIndex API
+  description: "This is the OmniIndex Fully Homomorphic Encrypted Blockchain API, which exposes all methods that a client will require to talk to the Blockchain. This includes querying the blockchain schematic, getting lists of available folders and content as well as running analytic queries and mining data from the encrypted data. Send us an email for a sample set of data to use (we have loaded the ENRON email database as a sample for you to play with!). OmniIndex is a next-generation data analytics platform designed for businesses to gain valuable insights from their data securely and efficiently. By utilizing advanced technologies like homomorphic encryption and blockchain, it ensures your data remains private and protected from unauthorized access. This easy-to-use platform empowers your organization to make smarter, data-driven decisions with confidence, while seamlessly integrating into your existing workflows. In essence, OmniIndex offers a powerful, secure, and user-friendly solution to help you stay ahead of the competition and drive your business growth."
+  termsOfService: https://www.omniindex.io/wp-content/uploads/2022/06/OmniIndex-Terms-and-Conditions-1.pdf
+  contact:
+    name: OmniIndex Development Team
+    url: https://www.omniindex.io
+    email: api@omniindex.io
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://api.omniindex.xyz/api_v1
+  description: OmniIndex api servers
+paths:
+  /getblockschematic:
+    post:
+      description: This POST method will bring back the schematic of the Blockchain.
+      operationId: GetBlockSchematicPost
+      requestBody:
+        description: JSON Object holding all of the data to be sent to add or retrieve a block from the Blockchain.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetBlockSchematic'
+        required: true
+      responses:
+        "200":
+          description: getblockschematic response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  
+  /getfolders:
+    post:
+      description: POST request to retrieve a list of folders from the Blockchain. This call is useful **only in the context that you are storing a filesystem on the block**
+      operationId: GetFoldersPost
+      requestBody:
+        description: JSON Object holding all of the data to be sent to for a search of the Blockchain..
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetFolders'
+        required: true
+      responses:
+        "200":
+                 
+  /getfiles:
+    post:
+      description: POST request to retrieve a list of file details.
+      operationId: GetFilesPost
+      requestBody:
+        description: JSON Object holding all of the data to be sent for a files search of the Blockchain.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetFiles'
+        required: true
+      responses:
+        "200":
+          
+  /searchchain:
+    post:
+      description: "POST request to search the Blockchain. This is a full-text search. searchType must be set to either 'fullText' or 'files'. FullText will search the file names, foldernames,  content and dates while files will only search within the content of the files."
+      operationId: SearchChainPost
+      requestBody:
+        description: JSON Object holding the search data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchChain'
+        required: true
+      responses:
+        "200":
+          description: searchchain response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchChainResponse'
+  /runanalyticquery:
+    post:
+      description: "This POST method will run a query on the Blockchain. To use it you are required to know the definition of the blocks that you are querying. If your where syntax includes data that has been encrypted for searching you need to use curly braces around your search string. EG: SELECT X FROM Y where thissearchableowners LIKE '%{what am i searching for}%'. The API will then convert this into a searchable ciphered stream."
+      operationId: RunAnalyticQueryPost
+      requestBody:
+        description: JSON Object holding all of the data to be sent to add a block to the Blockchain.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunAnalyticQuerySchematic'
+        required: true
+      responses:
+        "200":
+          description: runanalyticquery response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RunAnalyticQuerySchematicResponse'
+  /minedata:
+    post:
+      description: "This POST method will add a block to the chain. This is avery dynamic call, that requires a json object with the data to be sent to the server. This object MUST follow the follwing rules: Any (all) objects that need to be encrypted, the key must have the word 'Encrypt' appended to it. EG: fileContentsEncrypt. This will make sure that the SDK encrypts the value in all methods available prior to it being sent to a node."
+      operationId: MineDataPost
+      requestBody:
+        description: JSON Object holding all of the data to be sent to add a block to the Blockchain.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MineData'
+        required: true
+      responses:
+        "200":
+                  
+components:
+  schemas:
+    GetBlockSchematic:
+      required:
+      - server
+      - unitName
+      properties:
+        user:
+          type: string
+          description: This is a users username.
+        password:
+          type: string
+          description: This is a user password.
+        key:
+          type: string
+          description: This is the key to be used for the encryption and decryption for the unit. **Not to be used if a user/password pair has been sent**
+        server:
+          type: string
+          description: The Seed Node URL.
+    GetFolders:
+      required:
+      - server
+      - showProtected
+      - unitName
+      properties:
+        unitName:
+          type: string
+          description: The Blockchain name.
+        user:
+          type: string
+          description: Username (Not needed if a key is supplied).
+        password:
+          type: string
+          description: Password (Not needed if a key is supplied).
+        key:
+          type: string
+          description: "Crypto key. If not used, you must use a user/password comnbination."
+        server:
+          type: string
+          description: The Seed Node URL
+        showProtected:
+          type: string
+          description: Set to true to show decrypted folder names.
+    GetFiles:
+      required:
+      - folder
+      - server
+      - showProtected
+      - unitName
+      properties:
+        unitName:
+          type: string
+          description: The Blockchain name.
+        user:
+          type: string
+          description: "If a key is not used, then a user and password must be set."
+        password:
+          type: string
+          description: "If a key is not used, then a user and password must be set."
+        key:
+          type: string
+          description: This isthe key to be used for the encryption and decryption. If you do not use a key you must use a user/password comnbination.
+        server:
+          type: string
+          description: Seed Node URL
+        folder:
+          type: string
+          description: The folder name
+        showProtected:
+          type: string
+          description: Set to true to have the plain file details displayed.
+    SearchChain:
+      required:
+      - phrase
+      - searchType
+      - server
+      - type
+      - unitName
+      properties:
+        unitName:
+          type: string
+          description: The unit that you are envolved with (Generally your organization or department).
+        user:
+          type: string
+          description: "If a key is not used, then a user and password must be set."
+        password:
+          type: string
+          description: "If a key is not used, then a user and password must be set."
+        key:
+          type: string
+          description: This is the key to be used for the encryption and decryption. If you do not use a key you must use a user/password comnbination.
+        server:
+          type: string
+          description: This is the server address and port of the API server that will connect to one of the Blockchain nides.
+        phrase:
+          type: string
+          description: This is the unencrypted phrase to search for
+        searchType:
+          type: string
+          description: "Must be set to either (fullText or files). FullText will search the file names, foldernames,  content and dates while files will only search within the content."
+        showProtected:
+          type: string
+          description: This is the key to be used setting whether or not result strings are shown redacted (False) or not (True)
+    SearchChainResponse:
+      properties:
+        results:
+          type: object
+          description: This array will hold the files with the encrypted data decrypted.
+    RunAnalyticQuerySchematic:
+      required:
+      - analyticQuery
+      - server
+      - showProtected
+      - unitName
+      properties:
+        unitName:
+          type: string
+          description: The Blockchain name.
+        showProtected:
+          type: string
+          description: Set to true to show redacted fields
+        user:
+          type: string
+          description: "If a key is not used, then a user and password must be set."
+        password:
+          type: string
+          description: "If a key is not used, then a user and password must be set."
+        key:
+          type: string
+          description: This is the key to be used for the encryption and decryption. If you do not use a key you must use a user/password comnbination.
+        server:
+          type: string
+          description: This is the server address and port of the API server that will connect to one of the Blockchain nides.
+        analyticQuery:
+          type: string
+          description: This is the SQL Query that you wish to run
+    RunAnalyticQuerySchematicResponse:
+      properties:
+        results:
+          type: object
+          description: This array will hold the response of your query.
+    MineData:
+      required:
+      - server
+      - unitName
+      properties:
+        unitName:
+          type: string
+          description: The unit that you are envolved with (Generally your organization or department).
+        user:
+          type: string
+          description: This is a user username.
+        password:
+          type: string
+          description: This is a user password.
+        key:
+          type: string
+          description: Organization Crypto Key.
+        server:
+          type: string
+          description: The Seed Node
