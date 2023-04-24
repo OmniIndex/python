@@ -5,5 +5,10 @@ default:
     - pip install virtualenv
     - virtualenv venv
     - source venv/bin/activate
+    - export CI_LOG_LINE=$(git log --decorate=full| grep "^commit $CI_COMMIT_SHA[ ]")
+    # var = 1 if the current commit is the **latest** on main
+    - export IS_ON_MAIN=$(echo $CI_LOG_LINE | grep -qso "origin/main, " && echo 1 || echo 0)
+    # var = 1 if current commit is on any remote commit that is part of mains history
+    - export COMMIT_ON_MAIN=$(git branch -r --contains $CI_COMMIT_SHA | grep -Eq '^[ ]+origin/main$'  && echo 1 || echo 0)
   tags:
     - connectors-python
