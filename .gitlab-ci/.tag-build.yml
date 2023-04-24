@@ -16,9 +16,6 @@ variables:
   # make sure we fetch everything and also see what is happening
   GIT_FETCH_EXTRA_FLAGS: -f --tags --prune --update-head-ok
 
-stages:
-  - check_update_environment
-
 check_update_environment:
   stage: check_update_environment
   script:
@@ -38,8 +35,7 @@ build::stage::pypi:
     - python ./setup.py sdist bdist_wheel
     - pip install twine
     - TWINE_PASSWORD=${TWINE_API_TOKEN} TWINE_USERNAME=__token__ python -m twine upload --repository testpypi dist/*  
-  dependencies:
-    - check_update_environment
+  needs: ["check_update_environment"]
   artifacts:
     name: "${CI_COMMIT_TAG}-${CI_ENVIRONMENT_NAME}"
     paths:
@@ -52,6 +48,7 @@ build::stage::pypi:
 build::pypi:
   stage: build
   environment: production
+  needs: ["build::stage::pypi"]
   script:
     - python ./setup.py sdist bdist_wheel
     - pip install twine
@@ -59,8 +56,6 @@ build::pypi:
     - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
     # Push to pypi repository
     - TWINE_PASSWORD=${TWINE_API_TOKEN} TWINE_USERNAME=__token__ python -m twine upload --repository omniindex dist/*  
-  dependencies:
-    - build::stage::pypi
   artifacts:
     name: "${CI_COMMIT_TAG}-${CI_ENVIRONMENT_NAME}"
     paths:
@@ -73,8 +68,7 @@ build::pypi:
 doc::sphinx:
   stage: documentation
   environment: production
-  dependencies:
-    - build::pypi
+  needs: ["build::pypi"]
   script:
     - pip install sphinx recommonmark sphinx_rtd_theme
     - sphinx-build -M html ./docs documentation
