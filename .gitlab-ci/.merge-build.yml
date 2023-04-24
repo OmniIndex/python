@@ -3,7 +3,6 @@ build::pypi:
   environment: staging
   script:
     - python ./setup.py sdist bdist_wheel
-    - TWINE_PASSWORD=${TWINE_API_TOKEN} TWINE_USERNAME=__token__ python -m twine upload --repository testpypi dist/*  
   artifacts:
     name: "${CI_COMMIT_BRANCH}-${CI_ENVIRONMENT_NAME}"
     paths:
