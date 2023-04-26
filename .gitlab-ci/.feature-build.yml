@@ -1,0 +1,29 @@
+build::feature::pypi:
+  stage: build
+  environment: development
+  script:
+    - python ./setup.py sdist bdist_wheel
+  artifacts:
+    name: "${CI_COMMIT_BRANCH}-${CI_ENVIRONMENT_NAME}"
+    paths:
+      - dist/*.whl
+      - dist/*.gz
+    expire_in: 10 minutes
+  only:
+    - /^feature\/.*$/
+
+doc::feature::sphinx:
+  stage: documentation
+  environment: development
+  needs:
+    - build::feature::pypi
+  script:
+    - pip install sphinx recommonmark sphinx_rtd_theme
+    - sphinx-build -M html ./docs documentation
+  artifacts:
+    name: "${CI_COMMIT_BRANCH}-${CI_ENVIRONMENT_NAME}-docs"
+    paths:
+      - documentation/*
+    expire_in: 15 minutes
+  only:
+    - /^feature\/.*$/
