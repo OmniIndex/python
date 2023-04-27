@@ -15,7 +15,7 @@ build::pypi:
 doc::sphinx:
   stage: documentation
   environment: staging
-  needs:
+  dependencies:
     - build::pypi
   script:
     - pip install sphinx recommonmark sphinx_rtd_theme
