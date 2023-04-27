@@ -18,7 +18,7 @@ default:
     # set default tag for the runner jobs
     - connectors-python
   
-  check_update_environment:
+check_update_environment:
   stage: check_update_environment
   script:
     # Exit if tag is given on none main branch early
