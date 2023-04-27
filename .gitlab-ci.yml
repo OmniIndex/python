@@ -5,6 +5,7 @@ include:
   - '/.gitlab-ci/.tag-build.yml' # handles any merge commits
 
 stages:
+  - check_update_environment
   - build
   - documentation
   - deploy
