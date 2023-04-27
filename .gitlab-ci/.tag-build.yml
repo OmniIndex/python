@@ -2,8 +2,8 @@ workflow:
   rules:
     # Do no allow manually triggered pipelines to prevent duplicates!
     # Instead rerun the pipeline created with the last push
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: never
+    # - if: $CI_PIPELINE_SOURCE != "push"
+    #   when: never
     # Only execute when a valid version tag like v1.0, 2.3 or similar is given
     # Required is always one point like 1.0
     - if: $CI_COMMIT_TAG =~ /^v?[0-9]+[.][0-9]+([.][0-9]+)?$/
@@ -11,21 +11,10 @@ workflow:
 variables:
   # Make sure we don't get a shallow copy
   GIT_DEPTH: 0
-  # Fetch is default just to make clear what is used
+  # Fetch is default but we'll force it here to make sure fetch is used
   GIT_STRATEGY: fetch
-  # make sure we fetch everything and also see what is happening
+  # Fetch everything
   GIT_FETCH_EXTRA_FLAGS: -f --tags --prune --update-head-ok
-
-check_update_environment:
-  stage: check_update_environment
-  script:
-    # Exit if tag is given on none main branch early
-    # Check for 
-    - if [[ ! -z "$CI_COMMIT_TAG" && $COMMIT_ON_MAIN != 1 ]]; then
-         echo "Tags should never be applied to non main branches!" >&2;
-         echo "We quit early! Please delete the tag, merge the branch to main and recreate the tag to continue" >&2;
-         exit 1;
-      fi
 
 
 build::stage::pypi:
@@ -36,12 +25,6 @@ build::stage::pypi:
     - pip install twine
     - TWINE_PASSWORD=${TWINE_API_TOKEN} TWINE_USERNAME=__token__ python -m twine upload --repository testpypi dist/*  
   needs: ["check_update_environment"]
-  artifacts:
-    name: "${CI_COMMIT_TAG}-${CI_ENVIRONMENT_NAME}"
-    paths:
-      - dist/*.whl
-      - dist/*.gz
-    expire_in: 7 days
   only:
     - tags
 
@@ -61,7 +44,7 @@ build::pypi:
     paths:
       - dist/*.whl
       - dist/*.gz
-    expire_in: 7 days
+    expire_in: 30 days
   only:
     - tags
 
@@ -72,10 +55,11 @@ doc::sphinx:
   script:
     - pip install sphinx recommonmark sphinx_rtd_theme
     - sphinx-build -M html ./docs documentation
+    - tar -czvf ${CI_COMMIT_TAG}-${CI_ENVIRONMENT_NAME}-docs.tgz documentation
   artifacts:
     name: "${CI_COMMIT_TAG}-${CI_ENVIRONMENT_NAME}-docs"
     paths:
-      - documentation/*
-    expire_in: 7 days
+      - documentation/*.tgz
+    expire_in: 30 days
   only:
     - tags

@@ -1,5 +1,7 @@
 default:
   before_script:
+    - apt-get update
+    - apt-get -y --no-install-recommends install git
     - pip install --upgrade pip
     - python -V
     - pip install virtualenv
@@ -10,5 +12,19 @@ default:
     - export IS_ON_MAIN=$(echo $CI_LOG_LINE | grep -qso "origin/main, " && echo 1 || echo 0)
     # var = 1 if current commit is on any remote commit that is part of mains history
     - export COMMIT_ON_MAIN=$(git branch -r --contains $CI_COMMIT_SHA | grep -Eq '^[ ]+origin/main$'  && echo 1 || echo 0)
+    # name the caching dir
+    - export CI_CACHE_DIR=/cache/${CI_COMMIT_TAG}-${CI_ENVIRONMENT_NAME}
   tags:
+    # set default tag for the runner jobs
     - connectors-python
+  
+  check_update_environment:
+  stage: check_update_environment
+  script:
+    # Exit if tag is given on none main branch early
+    # Check for 
+    - if [[ ! -z "$CI_COMMIT_TAG" && $COMMIT_ON_MAIN != 1 ]]; then
+        echo "Tags should never be applied to non main branches!" >&2;
+        echo "Exiting! Please delete the tag, merge the branch to main to continue" >&2;
+        exit 1;
+      fi
