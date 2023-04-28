@@ -3,3 +3,4 @@ pandas
 pytest
 simplejson
 delorean
+omniindex==0.1.12
