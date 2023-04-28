@@ -1,10 +1,3 @@
-workflow:
-  rules:
-    # Do no allow manually triggered pipelines to prevent duplicates!
-    # Instead rerun the pipeline created with the last push
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: never
-
 build::feature::pypi:
   stage: build
   environment: development
@@ -22,8 +15,7 @@ build::feature::pypi:
 doc::feature::sphinx:
   stage: documentation
   environment: development
-  dependencies:
-    - build::feature::pypi
+  needs: ["build::feature::pypi"]
   script:
     - pip install sphinx recommonmark sphinx_rtd_theme
     - sphinx-build -M html ./docs documentation
