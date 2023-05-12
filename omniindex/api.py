@@ -100,7 +100,7 @@ class OmniIndexClient:
         This API allows an authorized user to view the folder structure of a block they have the required permissions to inspect:
 
         :param method: (hard coded) HTTP request method (POST)
-        :param url: (hard coded) URL to the Omniindex API endpoint
+        :param url: URL to the Omniindex API endpoint. default is https://api.omniindex.xyz/api_v1/getblockschematic 
         :param showProtected: str value to show protected folders. 
         :param payload: JSON string containing the unit name, server, block type, user and API key.
         :param headers: (hard coded) Content-Type and Accept headers.
@@ -118,7 +118,7 @@ class OmniIndexClient:
         Reference to :func:`omniindex.api.OmniIndexClient.get_folders`.
         
         """
-        url = "https://api.omniindex.xyz/api_v1/getfolders"
+        url = self.base_url +"/getfolders"
 
         payload = json.dumps({
             "unitName": self.unit_name,
@@ -165,7 +165,7 @@ class OmniIndexClient:
         reference to :func:`omniindex.api.OmniIndexClient.get_searchchain`.
         
         """
-        url = "https://api.omniindex.xyz/api_v1/searchchain"
+        url = self.base_url +"/searchchain"
 
         payload = json.dumps({
             "unitName": self.unit_name,
@@ -221,7 +221,7 @@ class OmniIndexClient:
             maybe we could be consistent re get_folders and getfiles (use of underscore)
 
         """
-        url = "https://api.omniindex.xyz/api_v1/getfiles"
+        url = self.base_url +"/getfiles"
 
         payload = json.dumps({
             "unitName": self.unit_name,
@@ -266,7 +266,7 @@ class OmniIndexClient:
 
         Reference to :func:`omniindex.api.OmniIndexClient.run_analytic_query`.
         """	
-        url = "https://api.omniindex.xyz/api_v1/runanalyticquery"
+        url = self.base_url +"/runanalyticquery"
 
         payload = json.dumps({
             "unitName": self.unit_name,
@@ -314,7 +314,7 @@ class OmniIndexClient:
 
         Reference to :func:`omniindex.api.OmniIndexClient.post_minedata`.
         """
-        url = "https://api.omniindex.xyz/api_v1/minedata"
+        url = self.base_url +"/minedata"
 
         # Load the JSON strings into Python dictionaries
         pre_payload1 = json.loads(data)
