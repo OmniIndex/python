@@ -76,11 +76,10 @@ class OmniIndexClient:
 
         try: 
             response = requests.request("POST", url, headers=HEADERS, data=payload)
-            
+            return response.text
         except Exception as e:
             logging.error(e)
             response = "{ \"Success\" : \"Fail\", \"Message\" : \"" + e + "\" }"
-        finally:
             return response.text
 
     def get_folders(self, show_protected):
