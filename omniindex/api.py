@@ -14,7 +14,7 @@ HEADERS = {'Content-Type': 'application/json',
 if DEBUG:
     logging.basicConfig(filename='omni_api_log_file.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 else:
-    logging.basicConfig(filename='omni_api_log_file.log', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(filename='omni_api_log_file.log', level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class OmniIndexClient:
     """
@@ -30,16 +30,19 @@ class OmniIndexClient:
     :type user: str
     :param block_type: The type of block to use for the transaction.
     :type block_type: str
+    :param base_url: The base_url of the OmniIndex API Server. Default is https://api.omniindex.xyz/api_v1/
+    :type block_type: str
 
     For more information on the client object and elements refer to the `OmniIndex Documentation <https://omniindex.io/docs/>`_.
     
     """
-    def __init__(self, server, api_key, unit_name, block_type, user):
+    def __init__(self, server, api_key, unit_name, block_type, user, base_url):
         self.server = server
         self.api_key = api_key
         self.unit_name = unit_name
         self.block_type = block_type
         self.user = user
+        self.base_url = base_url
 
     def get_block_schematic(self):
         """
@@ -47,7 +50,7 @@ class OmniIndexClient:
         This POST method will bring back the schematic of a block that the user has access to
 
         :param method: (hard coded) HTTP request method (POST)
-        :param url: (hard coded) URL to the Omniindex API endpoint 
+        :param url: URL to the Omniindex API endpoint. default is https://api.omniindex.xyz/api_v1/getblockschematic 
         :param payload: JSON string containing the unit name, server, block type, user and API key.
         :param headers: (hard coded) Content-Type and Accept headers.
         :param response: Response from the API call.
@@ -63,7 +66,7 @@ class OmniIndexClient:
         Reference to :func:`omniindex.api.OmniIndexClient.get_block_schematic`.
         
         """
-        url = "https://api.omniindex.xyz/api_v1/getblockschematic"
+        url = self.base_url + "/getblockschematic"
 
         payload = json.dumps({
             "unitName": self.unit_name,
