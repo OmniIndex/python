@@ -147,7 +147,7 @@ class OmniIndexClient:
         :param search_phrase: a string to search for.
         :param search_type: "fulltext" or "files" (default is "fulltext") FullText will search the file names, folder names, content, and dates, while files will only search within the content of the files:
         :param method: (hard coded) HTTP request method (POST)
-        :param url: (hard coded) URL to the Omniindex API endpoint
+        :param url: URL to the Omniindex API endpoint. default is https://api.omniindex.xyz/api_v1/getblockschematic 
         :param payload: JSON string containing the unit name, server, block type, user and API key.
         :param headers: (hard coded) Content-Type and Accept headers.
         :param response: Response from the API call.
@@ -200,7 +200,7 @@ class OmniIndexClient:
         :param show_protected: "true" or "false" (default is "false") sets if the search will include redacted content.
         :param folder_name: a string to search for.
         :param method: (hard coded) HTTP request method (POST)
-        :param url: (hard coded) URL to the Omniindex API endpoint
+        :param url: URL to the Omniindex API endpoint. default is https://api.omniindex.xyz/api_v1/getblockschematic 
         :param payload: JSON string containing the unit name, server, block type, user and API key.
         :param headers: (hard coded) Content-Type and Accept headers.
         :param response: Response from the API call.
@@ -250,7 +250,7 @@ class OmniIndexClient:
         :param show_protected: "true" or "false" (default is "false") sets if the search will include redacted content.
         :param query: a string to search for.
         :param method: (hard coded) HTTP request method (POST)
-        :param url: (hard coded) URL to the Omniindex API endpoint
+        :param url: URL to the Omniindex API endpoint. default is https://api.omniindex.xyz/api_v1/getblockschematic 
         :param payload: JSON string containing the unit name, server, block type, user and API key.
         :param headers: (hard coded) Content-Type and Accept headers.
         :param response: Response from the API call.
@@ -297,7 +297,7 @@ class OmniIndexClient:
 
         :param data: a string of JSON which is merged with the credentials payload to form the new block.
         :param method: (hard coded) HTTP request method (POST)
-        :param url: (hard coded) URL to the Omniindex API endpoint
+        :param url: URL to the Omniindex API endpoint. default is https://api.omniindex.xyz/api_v1/getblockschematic 
         :param payload: JSON string containing the unit name, server, block type, user and API key.
         :param headers: (hard coded) Content-Type and Accept headers.
         :param response: Response from the API call.
