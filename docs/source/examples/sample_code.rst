@@ -54,38 +54,6 @@ You will now have a JSON output of the block schematic:
 
    {'0': {'column_name': 'bodyowners', 'data_type': 'text'}, '1': {'column_name': 'bodysearchableowners', 'data_type': 'text'}, '2': {'column_name': 'contentsearchableowners', 'data_type': 'text'}, '3': {'column_name': 'context', 'data_type': 'text'}, '4': {'column_name': 'context2', 'data_type': 'text'}, '5': {'column_name': 'folder', 'data_type': 'text'}, '6': {'column_name': 'fromowners', 'data_type': 'text'}, '7': {'column_name': 'fromsearchableowners', 'data_type': 'text'}, '8': {'column_name': 'hash', 'data_type': 'character varying'}, '9': {'column_name': 'message_id', 'data_type': 'text'}, '10': {'column_name': 'oidxid', 'data_type': 'integer'}, '11': {'column_name': 'prevhash', 'data_type': 'character varying'}, '12': {'column_name': 'priorhash', 'data_type': 'text'}, '13': {'column_name': 'recieveddate', 'data_type': 'timestamp without time zone'}, '14': {'column_name': 'sentiment', 'data_type': 'text'}, '15': {'column_name': 'sentiment2', 'data_type': 'text'}, '16': {'column_name': 'subject', 'data_type': 'text'}, '17': {'column_name': 'toowners', 'data_type': 'text'}, '18': {'column_name': 'tosearchableowners', 'data_type': 'text'}}
 
-get_folders
------------
-
-The `get_folders` method returns a list of folders in the dataset. You can use the `showRedacted` parameter to return the redacted data or the full data.
-
-First, let's get a list of folders with the data redacted: (The use case for this is check that folders are present in the dataset, without revealing the folder names)
-
-.. code-block:: python
-
-   folders = client.get_folders("false")
-   data = json.loads(folders)
-   print(data)
-
-You will now have a JSON output of the folders:
-
-.. code-block:: bash
-
-   {'results': [{'directory': 'Data has been redacted.'}, {'directory': 'Data has been redacted.'}, {'directory': 'Data has been redacted.'}, {'directory': 'Data has been redacted.'}, {'directory': 'Data has been redacted.'}]}
-
-Now let's get a list of folders with the full data:
-
-.. code-block:: python
-
-   folders = client.get_folders("true")
-   data = json.loads(folders)
-   print(data)
-
-You will now have a JSON output of the folders:
-
-.. code-block:: bash
-   
-   {'results': [{'directory': '/data/user/0/com.example.dropblock/cache'}, {'directory': 'Dropblock/2023-03-07'}, {'directory': 'Dropblock/2023-03-02'}, {'directory': 'Dropblock/2023-03-01'}, {'directory': 'Dropblock'}]}Tests
 
 get_searchchain
 ---------------
@@ -117,43 +85,6 @@ We could go on to pull a specific content block, or version of that content usin
 
 (For convenience, we have excluded the majority of the Encryption hash)
 
-get_files
----------
-
-In order to list files in a folder construct on the block chanin, we use the following (note that in this example we are using the pandas dataframe library)
-
-
-.. code-block:: python
-
-   fileresult = client.getfiles("true", "dropblock")
-   data = json.loads(fileresult)
-   data_df = pd.DataFrame(data['results'])
-   print(data_df)
-
-This gives you a list of files in the folder, and the encrypted content of the file:
-
-.. image:: ../getfiles.png
-
-You can see from the structure of the returned dataset that there is a 'context' field included, which is automatically calculated by the OmniIndex engine against a narrow machine learning
-model or ontology. This is a great way to quickly identify the context of a document, and can be used to filter search results.
-
-.. code-block:: bash
-
-   <class 'pandas.core.frame.DataFrame'>
-   RangeIndex: 20 entries, 0 to 19
-   Data columns (total 9 columns):
-   #   Column            Non-Null Count  Dtype 
-   ---  ------            --------------  ----- 
-   0   author            20 non-null     object
-   1   directory         20 non-null     object
-   2   fileextension     20 non-null     object
-   3   filemodifieddate  20 non-null     object
-   4   filename          20 non-null     object
-   5   filesize          20 non-null     object
-   6   fullpath          20 non-null     object
-   7   hash              20 non-null     object
-   8   context           2 non-null      object
-   dtypes: object(9)  
 
 run_analytic_query
 -------------------
@@ -218,6 +149,78 @@ we are very careful not to return any information that could be used to identify
    data = '{"blahEncrypt": "blah1", "contentsearchable": "Some fabulous content", "dateAdded": "2021-01-01", "dateModified": "190266420000", "fileExtension": "txt", "fileSize": "100", "filename": "test.txt"}'
    result = client.post_minedata(MASTER_KEY, data)
    print(result)
+
+get_folders
+-----------
+
+The `get_folders` method returns a list of folders in the dataset. You can use the `showRedacted` parameter to return the redacted data or the full data.
+
+First, let's get a list of folders with the data redacted: (The use case for this is check that folders are present in the dataset, without revealing the folder names)
+
+.. code-block:: python
+
+   folders = client.get_folders("false")
+   data = json.loads(folders)
+   print(data)
+
+You will now have a JSON output of the folders:
+
+.. code-block:: bash
+
+   {'results': [{'directory': 'Data has been redacted.'}, {'directory': 'Data has been redacted.'}, {'directory': 'Data has been redacted.'}, {'directory': 'Data has been redacted.'}, {'directory': 'Data has been redacted.'}]}
+
+Now let's get a list of folders with the full data:
+
+.. code-block:: python
+
+   folders = client.get_folders("true")
+   data = json.loads(folders)
+   print(data)
+
+You will now have a JSON output of the folders:
+
+.. code-block:: bash
+   
+   {'results': [{'directory': '/data/user/0/com.example.dropblock/cache'}, {'directory': 'Dropblock/2023-03-07'}, {'directory': 'Dropblock/2023-03-02'}, {'directory': 'Dropblock/2023-03-01'}, {'directory': 'Dropblock'}]}Tests
+
+get_files
+---------
+
+In order to list files in a folder construct on the block chanin, we use the following (note that in this example we are using the pandas dataframe library)
+
+
+.. code-block:: python
+
+   fileresult = client.getfiles("true", "dropblock")
+   data = json.loads(fileresult)
+   data_df = pd.DataFrame(data['results'])
+   print(data_df)
+
+This gives you a list of files in the folder, and the encrypted content of the file:
+
+.. image:: ../getfiles.png
+
+You can see from the structure of the returned dataset that there is a 'context' field included, which is automatically calculated by the OmniIndex engine against a narrow machine learning
+model or ontology. This is a great way to quickly identify the context of a document, and can be used to filter search results.
+
+.. code-block:: bash
+
+   <class 'pandas.core.frame.DataFrame'>
+   RangeIndex: 20 entries, 0 to 19
+   Data columns (total 9 columns):
+   #   Column            Non-Null Count  Dtype 
+   ---  ------            --------------  ----- 
+   0   author            20 non-null     object
+   1   directory         20 non-null     object
+   2   fileextension     20 non-null     object
+   3   filemodifieddate  20 non-null     object
+   4   filename          20 non-null     object
+   5   filesize          20 non-null     object
+   6   fullpath          20 non-null     object
+   7   hash              20 non-null     object
+   8   context           2 non-null      object
+   dtypes: object(9)  
+
 
 Datasets, dataframes and pandas
 -------------------------------

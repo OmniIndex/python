@@ -44,6 +44,11 @@ Refer to your OmniIndex API credentials for the following parameters which are r
        unit_name="your_unit_name", # your unit name 
        block_type="your_block_type", # your block type 
        user="your_user" # your user 
-   )
+       base_url="https://[your api server address]" # the OmniIndex API base url. 
+
+
+If you have not set up your own API server, use https://api.omniindex.xyz/api_v1/
+
+There are circumstances where you may want to use your master key - but for these, we recommend you pass that as a parameter to the `OmniIndexClient` functions, such as minedata.
 
 For more information on the available classes, methods, and their usage, refer For more information on the client object and elements refer to the `OmniIndex Documentation <https://omniindex.io/docs/>`_..
