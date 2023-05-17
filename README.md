@@ -31,6 +31,7 @@ We would recommed you set these for
 * OMNIINDEX_API_NODE
 * OMNIINDEX_API_TYPE
 * OMNIINDEX_API_UNIT
+* OMNIINDEX_API_BASE_URL
 
 Linux / bash etc
 

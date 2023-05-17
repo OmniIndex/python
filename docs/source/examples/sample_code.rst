@@ -91,9 +91,13 @@ run_analytic_query
 
 This POST method will run a query on the Blockchain. To use it you are required to know the definition of the blocks that you are querying. If your where syntax includes data that has been encrypted for searching you need to use curly braces around your search string. EG: 
 
+.. note:: 
+
+   It is a best practice to ensure that your SQL statement includes both a SELECT statement and a LIMIT statement. This will ensure that you are not asking the server for too much data.
+
 .. code-block:: sql
    
-   SELECT X FROM Y where thissearchableowners LIKE '%{what am i searching for}%'. 
+   SELECT X FROM Y where thissearchableowners LIKE '%{what am i searching for} LIMIT 10 %'. 
    
 The API will then convert this into a searchable ciphered stream.
 Running this query is akin to a SQL or OData query on any dataset, except this one is protected by OmniIndex’s patented FHE.
@@ -119,13 +123,12 @@ as always, we would recommend that you never type this in your code, but use env
 only pass 2 parameters to the API which are the master encryption key and the data that you want to add to the blockchain. The data is passed as a JSON string, and the API will return only status code 200. It will do this even if you are unsuccesful in adding to the blockchain, 
 we are very careful not to return any information that could be used to identify the data that is on your blockchain, even if the appaling event of your encryption key being known to a bad actor.
 
-.. note::        
-            1. Create a master encryption key. This is a key that only you will ever know and will be used to encrypt all data in the OmniIndex Blockchain. This key is the heart of the OmniIndex Blockchain and what makes us so unique. So long as this key is safe, your data
-            can never be compromised. For this reason, you must keep this key safe and never share it with anyone. If you lose this key, you will lose all of your data. There are many enterprise grade encryption tools available to help you create and store your master key.
-            2. Set up your omniindex client with the unit_name of your choice (This should map to the business unit or use case for this blockchain. It is the name that will be used to identify your Blockchain. It is also the name that will be used to identify your Blockchain when you are querying it or running data analytics against it), user/password pairings.
-            3. Create a JSON object with the data you want to store in the OmniIndex Blockchain. This object must follow the rules outlined above.
+   
+#. Create a master encryption key. This is a key that only you will ever know and will be used to encrypt all data in the OmniIndex Blockchain. This key is the heart of the OmniIndex Blockchain and what makes us so unique. So long as this key is safe, your data can never be compromised. For this reason, you must keep this key safe and never share it with anyone. If you lose this key, you will lose all of your data. There are many enterprise grade encryption tools available to help you create and store your master key.
+#. Set up your omniindex client with the unit_name of your choice (This should map to the business unit or use case for this blockchain. It is the name that will be used to identify your Blockchain. It is also the name that will be used to identify your Blockchain when you are querying it or running data analytics against it), user/password pairings.
+#. Create a JSON object with the data you want to store in the OmniIndex Blockchain. This object must follow the rules outlined above.
         
-        Think hard about the data you want to store in the OmniIndex Blockchain. You can store anything you want, unstructured blobs of 'stuff' or structured filesystems. The choice is yours. The only thing you need to remember is that there is no going back. The schema of the blockchain is set at the time of creation and cannot be changed. (If it could, it would not be the immutable ledger or system of record that is a key feature of OmniIndex).
+Think hard about the data you want to store in the OmniIndex Blockchain. You can store anything you want, unstructured blobs of 'stuff' or structured filesystems. The choice is yours. The only thing you need to remember is that there is no going back. The schema of the blockchain is set at the time of creation and cannot be changed. (If it could, it would not be the immutable ledger or system of record that is a key feature of OmniIndex).
            
 
 
@@ -143,8 +146,9 @@ we are very careful not to return any information that could be used to identify
    USER_KEY = os.environ.get('OMNIINDEX_USER_KEY')
    UNIT_NAME = os.environ.get('OMNIINDEX_UNIT_NAME')
    USER = os.environ.get('OMNIINDEX_USER')
+   BASE_URL = os.environ.get('OMNIINDEX_BASE_URL')
 
-   client = OmniIndexClient(NODE, USER_KEY, UNIT_NAME, 'Owner', USER)
+   client = OmniIndexClient(NODE, USER_KEY, UNIT_NAME, 'Owner', USER, BASE_URL)
    # even though the data is JSON, it needs to be passed as a string, see the unix timestamp and filesize examples below
    data = '{"blahEncrypt": "blah1", "contentsearchable": "Some fabulous content", "dateAdded": "2021-01-01", "dateModified": "190266420000", "fileExtension": "txt", "fileSize": "100", "filename": "test.txt"}'
    result = client.post_minedata(MASTER_KEY, data)
@@ -259,6 +263,7 @@ API endpoint tests
     - 'OI_API_TEST_DEMO_KEY' another user key you want to test
     - 'OI_API_TEST_USER_DEMO' the user name of the user key you want to test 
     - 'OI_API_TEST_UNIT_DEMO' the unit name of the user key you want to test
+    - 'OI_API_TEST_BASE_URL' the base url of the API you want to test, e.g. 'https://api.omniindex.xyz/api_v1
    
 
 - then run the tests:
