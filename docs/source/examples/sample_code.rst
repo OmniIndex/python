@@ -101,9 +101,10 @@ This POST method will run a query on the Blockchain. To use it you are required 
    
 The API will then convert this into a searchable ciphered stream.
 Running this query is akin to a SQL or OData query on any dataset, except this one is protected by OmniIndex’s patented FHE.
-The only thing to watch out for is that unlike standard SQL, there is no need to include the name of the datastore because that is defined by the unitName that we are working with. Similarly, there are no joins in ‘runanalyticquery’, but you can ‘SELECT’, ‘ORDER’, ‘LIMIT’ and set parameters including ‘LIKE’ to return the data that you want to query.
+Two things to watch out for is that unlike standard SQL, there is no need to include the name of the datastore because that is defined by the unitName that we are working with. Similarly, there are no joins in ‘runanalyticquery’, but you can ‘SELECT’, ‘ORDER’, ‘LIMIT’ and set parameters including ‘LIKE’ to return the data that you want to query.
 Note that when returning ‘data objects’ as opposed to ‘file objects’, these will be base64 encoded and you will need to handle decoding in your own scripts. This is standard practice for all major data store providers. 
 Notice that the select statement is ‘SELECT * FROM WHERE […]’ 
+The second thing to note is that the SQL engine expects there to be a space between the last character of the query and the closing quotation mark.
 
 .. code-block:: python
 
