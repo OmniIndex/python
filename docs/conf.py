@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'OmniIndex Connector Python Library'
 copyright = '2023, OmniIndex Inc'
 author = 'James Stanbridge'
-release = '0.1.14'
+release = '0.1.15'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
