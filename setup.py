@@ -10,7 +10,7 @@ HERE = path.abspath(path.dirname(__file__))
 
 setup(
     name="omniindex",
-    version="0.1.14",
+    version="0.1.15",
     packages=find_packages(exclude=["tests"]),
     install_requires=[
         "requests",
