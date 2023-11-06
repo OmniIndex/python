@@ -170,7 +170,7 @@ docs/_templates/
 # Testing notebooks
 tests/tests-1.ipynb
 tests-1.ipynb
-tests-1.ipynb
+tests-2.ipynb
 test.json
 
 # These are the file that is created by the linter for schema validation
