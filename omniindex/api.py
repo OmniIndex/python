@@ -1,115 +1,162 @@
-import psycopg2
-import asyncio
-from psycopg2 import errors
+from api_credentials import APICredentials
+from pgbc_credentials import PGBCCredentials
+from enums import OmniIndexState
+import requests
+import json
 
-class Pgbc:
-    def __init__(self, server, port, manager_user, user=None, password=None):
-        self.server = server
-        self.port = port
-        self.manager = manager_user
-        self.manager_password = password
-        self.database_user = 'postgres'
-        if user:
-            self.database_user = user
+class OmniIndex:
+    """
+    A class representing the OmniIndex system.
+    mniIndex is your custom class. It has an __init__ method, which is the constructor of the class. 
+    This method is called when you create a new instance of the class. 
+    The _loadOmniConfig and _retrieveDomainKey methods are used to load the configuration and retrieve the domain key, respectively.
 
-    def connect(self, command):
-        try:
-            conn = psycopg2.connect(
-                user=self.database_user,
-                host=self.server,
-                password=self.manager_password,
-                port=self.port
-            )
-            cursor = conn.cursor()
-            cursor.execute(command)
-            result = cursor.fetchall()
-            conn.close()
-            return result
-        except errors.DatabaseError as e:
-            # Extracting the actual error message
-            error_message = str(e).splitlines()[0]
-            raise Exception(error_message)
-    
-    def add_user(self, user_name, password):
+    Attributes:
+        debug (bool): Indicates whether debug output should be printed.
+        _config_locale (str): The path to the JSON configuration file.
+        _credentials (APICredentials): The credentials for the OmniIndex system.
+        _state (OmniIndexState): The current state of the OmniIndex system.
+
+    Example:
+    ```python
+    omniIndex = OmniIndex.withAPICredentials(apiCredentials=APICredentials(aPIServer='test-api-server', seedNode='test-seed-node', localDomain='com.omniindex.test', nodeServer='test-node-server.io'))
+    print(omniIndex._credentials.nodeServer)  # Output: test-node-server.io
+    ```
+
+    """
+
+    def __init__(self, config_locale=None, debug=False):
         """
-        Adds a new user to a PostgreSQL database.
+        Initializes a new instance of the OmniIndex class.
 
         Args:
-            user_name (str): The name of the user to be added.
-            password (str): The password for the new user.
+            config_locale (str, optional): The path to the JSON configuration file. Defaults to None.
+            debug (bool, optional): Indicates whether debug output should be printed. Defaults to False.
+
+        """
+        self.debug = debug
+        self._config_locale = config_locale or 'assets/configurations/omniindex.json'
+        self._credentials = APICredentials()
+        self._state = OmniIndexState.uninitialized
+
+    @property
+    def state(self):
+        """
+        Gets the current state of the OmniIndex system.
 
         Returns:
-            str: The result of the SQL command as a string if the user is successfully added.
-            str: The exception message as a string if there is an exception during the execution of the SQL command.
+            OmniIndexState: The current state of the OmniIndex system.
 
-        Raises:
-            Exception: If any of the required data is missing.
-
-        Example Usage:
-            pgbc = Pgbc(server='localhost', port=5432, manager_user='admin', password='admin123')
-            result = pgbc.add_user('john', 'password123')
-            print(result)
         """
-        if all([user_name, password, self.server, self.port, self.manager, self.manager_password, self.database_user]):
-            command = f"SELECT pgbc.add_user('{self.manager}','{self.manager_password}','{user_name}','{password}', '');"
-            try:
-                results = self.connect(command)
-                return str(results[0])
-            except Exception as e:
-                return str(e)
-        else:
-            raise Exception("Please check and provide all the required data")
+        return self._state
 
-    def modify_user(self, manager_user, manager_password, user_name, password, new_password, to_manager):
-        is_manager = bool(manager_user and manager_password)
-        
-        if not (is_manager or (password and new_password)):
-            raise Exception("Your current and new password are required.")
+    @classmethod
+    def with_api_credentials(cls, api_credentials, debug=False):
+        """
+        Creates a new instance of the OmniIndex class with API credentials.
 
-        if not is_manager and to_manager:
-            raise Exception("Only a manager can elevate permissions.")
+        Args:
+            api_credentials (APICredentials): The API credentials for the OmniIndex system.
+            debug (bool, optional): Indicates whether debug output should be printed. Defaults to False.
 
-        if all([user_name, password, self.server, self.port, self.manager, self.manager_password, self.database_user]):
-            command = f"SELECT pgbc.modify_user('{self.manager}','{self.manager_password}','{user_name}','{password}','{new_password}',{to_manager});"
-            try:
-                results = self.connect(command)
-                return str(results[0])
-            except Exception as e:
-                return str(e)
-        else:
-            raise Exception("Please check and provide all the required data")
+        Returns:
+            OmniIndex: A new instance of the OmniIndex class with API credentials.
 
-        if manager_user == self.manager and manager_password == self.manager_password:
-            command = "SELECT pgbc.create_block_schema();"
-            try:
-                results = await self.connect(command)
-                return results
-            except Exception as err:
-                return str(err)
-        else:
-            print("Authorization failure.")
-            return "Authorization failure."
-    
-    async def create_block_schema(self, manager_user, manager_password):
-        if manager_user == self.manager and manager_password == self.manager_password:
-            command = "SELECT pgbc.create_block_schema();"
-            try:
-                results = await self.connect(command)
-                return results
-            except Exception as err:
-                return str(err)
-        else:
-            print("Authorization failure.")
-            return "Authorization failure."
+        """
+        instance = cls(debug=debug)
+        instance._credentials = api_credentials
+        instance._configLocale = ''
+        instance._state = OmniIndexState.configured
+        return instance
 
-    async def add_block_data(self, manager_user, manager_password, block_data):
-        if manager_user == self.manager and manager_password == self.manager_password:
-            command = f"SELECT pgbc.add_block_data('{block_data}');"
-            try:
-                results = await self.connect(command)
-                return results
-            except Exception as err:
-                return str(err)
-        else:
-            print("Authorization failure.")
-            return "Authorization failure."
+    @classmethod
+    def with_pgbc_credentials(cls, pgbc_credentials, debug=False):
+        """
+        Creates a new instance of the OmniIndex class with pgbc credentials.
+
+        Args:
+            pgbc_credentials (PGBCCredentials): The PGBC credentials for the OmniIndex system.
+            debug (bool, optional): Indicates whether debug output should be printed. Defaults to False.
+
+        Returns:
+            OmniIndex: A new instance of the OmniIndex class with PGBC credentials.
+
+        """
+        instance = cls(debug=debug)
+        instance._credentials = pgbc_credentials
+        instance._configLocale = ''
+        instance._state = OmniIndexState.configured
+        return instance
+
+    def _load_omni_config(self, authorize=False, nowait=False):
+        """
+        Loads the configuration for the OmniIndex system from a JSON file.
+
+        Args:
+            authorize (bool, optional): Indicates whether to authorize the OmniIndex system after loading the configuration. Defaults to False.
+            nowait (bool, optional): Indicates whether to wait for the domain key retrieval to complete before continuing. Defaults to False.
+
+        """
+        if self._state == OmniIndexState.uninitialized:
+            self._state = OmniIndexState.initialized
+
+        try:
+            with open(self._configLocale) as f:
+                json_conf = json.load(f)
+
+            self._debugOutput("omniindex.py _loadOmniConfig: " + str(json_conf))
+
+            self._credentials = APICredentials.withDomainKey(
+                aPIServer=json_conf["apiServer"],
+                seedNode=json_conf["seedNode"],
+                nodeServer=json_conf["nodeJS"],
+                localDomain=json_conf["localDomain"],
+                domainKey=json_conf["domainKey"]
+            )
+
+            self._state = OmniIndexState.configured if self._credentials.are_valid() else OmniIndexState.invalid
+
+            if self._credentials.are_valid() and authorize:
+                if nowait:
+                    self._retrieveDomainKey()
+                else:
+                    self._retrieveDomainKey().result()
+        except Exception:
+            self._state = OmniIndexState.invalid
+
+    def _retrieve_domain_key(self):
+        """
+        Retrieves the domain key for the OmniIndex system by making a POST request to the specified node server.
+
+        """
+        if not self._credentials.are_valid():
+            self._state = OmniIndexState.invalid
+            return
+
+        response = requests.post(
+            url=f"{self._credentials.nodeServer}/unit-name",
+            headers={"Content-Type": "application/json"},
+            data=json.dumps({
+                "id": self._credentials.domainKey,
+                "unit": self._credentials.localDomain
+            })
+        )
+
+        self._debugOutput("Unit ID : " + response.text)
+
+        if not response.text:
+            self._credentials.domainKey = ""
+            self._state = OmniIndexState.invalid
+
+        self._credentials.domainKey = response.text
+
+    def _debug_output(self, message):
+        """
+        Prints the debug output if debug mode is enabled.
+
+        Args:
+            message (str): The debug message to print.
+
+        """
+        if self.debug:
+            print(message)
