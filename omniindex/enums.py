@@ -85,19 +85,19 @@ class ClientStatus(Enum):
     Represents the status of a client.
 
     Attributes:
-        invalid (int): Represents an invalid status.
-        uninitialized (int): Represents an uninitialized status.
-        initialized (int): Represents an initialized status.
-        unauthenticated (int): Represents an unauthenticated status.
-        authenticating (int): Represents an authenticating status.
-        authenticated (int): Represents an authenticated status.
+        INVALID (int): Represents an invalid status.
+        UNINITIALIZED (int): Represents an uninitialized status.
+        INITIALIZED (int): Represents an initialized status.
+        UNAUTHENTICATED (int): Represents an unauthenticated status.
+        AUTHENTICATING (int): Represents an authenticating status.
+        AUTHENTICATED (int): Represents an authenticated status.
     """
-    invalid = 1
-    uninitialized = 2
-    initialized = 3
-    unauthenticated = 4
-    authenticating = 5
-    authenticated = 6
+    INVALID = 1
+    UNINITIALISED = 2
+    INITIALIZED = 3
+    UNAUTHENTICATED = 4
+    AUTHENTICATING = 5
+    AUTHENTICATED = 6
 
 class LoginType(Enum):
     """

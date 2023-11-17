@@ -1,6 +1,6 @@
-from api_credentials import APICredentials
-from pgbc_credentials import PGBCCredentials
-from enums import OmniIndexState
+from .api_credentials import APICredentials
+from .pgbc_credentials import PGBCCredentials
+from .enums import OmniIndexState
 import requests
 import json
 
@@ -37,7 +37,7 @@ class OmniIndex:
         self.debug = debug
         self._config_locale = config_locale or 'assets/configurations/omniindex.json'
         self._credentials = APICredentials()
-        self._state = OmniIndexState.uninitialized
+        self._state = OmniIndexState.UNINITIALIZED
 
     @property
     def state(self):
@@ -66,7 +66,7 @@ class OmniIndex:
         instance = cls(debug=debug)
         instance._credentials = api_credentials
         instance._configLocale = ''
-        instance._state = OmniIndexState.configured
+        instance._state = OmniIndexState.CONFIGURED
         return instance
 
     @classmethod
@@ -85,7 +85,7 @@ class OmniIndex:
         instance = cls(debug=debug)
         instance._credentials = pgbc_credentials
         instance._configLocale = ''
-        instance._state = OmniIndexState.configured
+        instance._state = OmniIndexState.CONFIGURED
         return instance
 
     def _load_omni_config(self, authorize=False, nowait=False):
@@ -97,8 +97,8 @@ class OmniIndex:
             nowait (bool, optional): Indicates whether to wait for the domain key retrieval to complete before continuing. Defaults to False.
 
         """
-        if self._state == OmniIndexState.uninitialized:
-            self._state = OmniIndexState.initialized
+        if self._state == OmniIndexState.UNINITIALIZED:
+            self._state = OmniIndexState.INITIALIZED
 
         try:
             with open(self._configLocale) as f:
@@ -114,7 +114,7 @@ class OmniIndex:
                 domainKey=json_conf["domainKey"]
             )
 
-            self._state = OmniIndexState.configured if self._credentials.are_valid() else OmniIndexState.invalid
+            self._state = OmniIndexState.CONFIGURED if self._credentials.are_valid() else OmniIndexState.INVALID
 
             if self._credentials.are_valid() and authorize:
                 if nowait:
@@ -122,7 +122,7 @@ class OmniIndex:
                 else:
                     self._retrieveDomainKey().result()
         except Exception:
-            self._state = OmniIndexState.invalid
+            self._state = OmniIndexState.INVALID
 
     def _retrieve_domain_key(self):
         """
@@ -130,7 +130,7 @@ class OmniIndex:
 
         """
         if not self._credentials.are_valid():
-            self._state = OmniIndexState.invalid
+            self._state = OmniIndexState.INVALID
             return
 
         response = requests.post(
@@ -146,7 +146,7 @@ class OmniIndex:
 
         if not response.text:
             self._credentials.domainKey = ""
-            self._state = OmniIndexState.invalid
+            self._state = OmniIndexState.INVALID
 
         self._credentials.domainKey = response.text
 

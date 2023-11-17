@@ -1,4 +1,4 @@
-from enums import OmniIndexAuthenticationType
+from .enums import OmniIndexAuthenticationType
 
 class BasicCredentials:
     """

@@ -1,5 +1,5 @@
-from enums import OmniIndexAuthenticationType
-from credentials import BasicCredentials
+from .enums import OmniIndexAuthenticationType
+from .credentials import BasicCredentials
 
 class APICredentials(BasicCredentials):
     """
