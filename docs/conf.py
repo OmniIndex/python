@@ -12,7 +12,7 @@ import sys
 sys.path.insert(0, os.path.abspath('..'))
 
 project = 'OmniIndex Connector Python Library'
-copyright = '2023, OmniIndex Inc'
+copyright = '2024, OmniIndex Inc'
 author = 'James Stanbridge'
 release = '0.2.01'
 
