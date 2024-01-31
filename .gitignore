@@ -163,6 +163,8 @@ cython_debug/
 docs/_build/
 docs/_static/
 docs/_templates/
+# root pdf
+*.pdf
 
 # Aria errors catched by the linter
 .hintrc
