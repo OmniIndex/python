@@ -1,11 +1,16 @@
 # Changelog
 
-## [v0.2.02] - 2024-01-31
+## [v0.2.02] - 2024-02-01
 
 ### Added
 
 Started work on the v2 lib,
 added api_v2.py with the first endpoint to add data to a block
+
+- Added bulk upload (jupyter only)
+- take inputs for params
+- use api_token dynamically generated from api (removed hard-coding)
+todo: add to class
 
 ### Changed
 

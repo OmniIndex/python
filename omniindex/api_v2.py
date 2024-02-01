@@ -1,11 +1,28 @@
 import logging
 import requests
 import csv
+from .api_credentials import APICredentials
+from .pgbc_credentials import PGBCCredentials
+from .enums import OmniIndexState
+import requests
+import json
 
-class DatabaseAPI:
+class OmniIndexAPI:
     """
-    A class that provides methods for interacting with a database API.
+    A class representing the OmniIndex system.
+    mniIndex is your custom class. It has an __init__ method, which is the constructor of the class. 
+    This method is called when you create a new instance of the class. 
+    The _loadOmniConfig and _retrieveDomainKey methods are used to load the configuration and retrieve the domain key, respectively.
+
+    Attributes:
+        debug (bool): Indicates whether debug output should be printed.
+        _credentials (APICredentials): The credentials for the OmniIndex system.
+        _state (OmniIndexState): The current state of the OmniIndex system.
+
+    Example:
+
     """
+
 
     def __init__(self, input_key: str, username: str = "some_name", password: str = "some_password"):
         """
