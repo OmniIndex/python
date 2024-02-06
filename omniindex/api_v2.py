@@ -8,20 +8,7 @@ import requests
 import json
 
 class OmniIndexAPI:
-    """
-    A class representing the OmniIndex system.
-    mniIndex is your custom class. It has an __init__ method, which is the constructor of the class. 
-    This method is called when you create a new instance of the class. 
-    The _loadOmniConfig and _retrieveDomainKey methods are used to load the configuration and retrieve the domain key, respectively.
-
-    Attributes:
-        debug (bool): Indicates whether debug output should be printed.
-        _credentials (APICredentials): The credentials for the OmniIndex system.
-        _state (OmniIndexState): The current state of the OmniIndex system.
-
-    Example:
-
-    """
+ 
 
 
     def __init__(self, input_key: str, username: str = "some_name", password: str = "some_password"):
@@ -54,8 +41,9 @@ class OmniIndexAPI:
 
         headers = {
             "AUTHORIZATION": f"Basic {self.input_key}",
-            "Referer": "OmniIndex Python Connector",
+            "Referer": "OmniIndex Python Connector 0.2.02",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "timeout": "30000"
         }
 
         try:
